@@ -1,7 +1,7 @@
 '''
 @date 2013-5-12
 
-@author "Hong-She Liang <starofrainnight@gmail.com>"
+@author Hong-She Liang <starofrainnight@gmail.com>
 '''
 
 
