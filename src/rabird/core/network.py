@@ -55,7 +55,6 @@ the IP existed in local network.
 
 Because the "arp" and "ping" program commons around windows and unix, and 
 does not required administration rights.  
-  
 '''
 def arp_resolve(host):
     if sys.platform == "win32":
