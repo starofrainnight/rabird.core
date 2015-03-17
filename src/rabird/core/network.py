@@ -61,13 +61,12 @@ def arp_resolve(host):
     if sys.platform == "win32":
         subprocess.check_output(["ping", "-n", "1", host])
         output = subprocess.check_output(["arp", "-a"])
-        matched = re.search(r'\s+%s\s+([\w-]+)' % re.escape(host), output)
     else:
         subprocess.check_output(["ping", "-c", "1", host])
         output = subprocess.check_output(["arp"])
-        matched = re.search(
-            r'\D%s\D.*((?:[0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2})' % re.escape(host), 
-            output)
+        
+    mac_expr = r'\D%s\D.*((?:[0-9a-fA-F]{2}[^0-9a-fA-F]+){5}[0-9a-fA-F]{2})' % re.escape(host)        
+    matched = re.search(mac_expr, output)
     if matched is not None:
         return text_to_mac(matched.group(1))
         
