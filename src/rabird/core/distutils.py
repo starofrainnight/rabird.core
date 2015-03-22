@@ -13,7 +13,6 @@ import shutil
 import sys
 import fnmatch
 import re
-from lib3to2.main import main as lib3to2_main
 
 # The shutil.copytree() or distutils.dir_util.copy_tree() will happen to report
 # error list below if we invoke it again and again ( at least in python 2.7.4 ):
@@ -73,6 +72,16 @@ def preprocess_sources_for_compatible(source_path, destination_path):
 		# We wrote program implicated by version 3, if python version large or equal than 3,
 		# we need not change the sources.
 		return
+	
+	# Check and prepare 3to2 module.
+	try:
+		from lib3to2.main import main as lib3to2_main
+	except ImportError:
+		import pip
+		
+		pip.main(['install', '3to2'])
+		
+		from lib3to2.main import main as lib3to2_main
 	
 	for folder_name in directories:
 		lib3to2_main("lib3to2.fixes", [os.path.join(destination_path, folder_name)])
