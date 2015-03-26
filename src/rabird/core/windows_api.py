@@ -13,6 +13,7 @@
 # so we have to use our "W" version apis ( unicode version apis ) to finish our
 # job.  
 # 
+import sys
 import ctypes
 
 # @return an unicode string indicate the command line
