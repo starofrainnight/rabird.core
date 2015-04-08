@@ -40,7 +40,7 @@ if sys.version_info[0] == 2:
 setup(
     name=package_name,
     version=__version__,
-    author='Hong-she Liang',
+    author='Hong-She Liang',
     author_email='starofrainnight@gmail.com',
     url='',
     py_modules=[to_package],
