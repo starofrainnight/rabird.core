@@ -77,15 +77,15 @@ def preprocess_source(base_dir=os.curdir):
     for adir in directories:
         shutil.rmtree(adir, ignore_errors=True)
     
-    # Removed old preprocessed sources.
-    shutil.rmtree(destination_path, ignore_errors=True)
-    __copy_tree(source_path, destination_path)
-            
     if sys.version_info[0] >= 3:
         # We wrote program implicated by version 3, if python version 
         # large or equal than 3, we need not change the sources.
         return source_path
-    
+
+    # Removed old preprocessed sources.
+    shutil.rmtree(destination_path, ignore_errors=True)
+    __copy_tree(source_path, destination_path)
+        
     # Check and prepare 3to2 module.
     try:
         from lib3to2.main import main as lib3to2_main
@@ -95,7 +95,7 @@ def preprocess_source(base_dir=os.curdir):
         pip.main(['install', '3to2'])
         
         from lib3to2.main import main as lib3to2_main
-    
+        
     lib3to2_main("lib3to2.fixes", [destination_path])
     return destination_path
 
