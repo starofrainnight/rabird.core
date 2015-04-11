@@ -11,6 +11,8 @@ import shutil
 import sys
 import fnmatch
 import re
+import filecmp
+import fnmatch
 
 PREPROCESSED_DIR = "preprocessed" 
 SOURCE_DIR = "src"
@@ -82,10 +84,6 @@ def preprocess_source(base_dir=os.curdir):
         # large or equal than 3, we need not change the sources.
         return source_path
 
-    # Removed old preprocessed sources.
-    shutil.rmtree(destination_path, ignore_errors=True)
-    __copy_tree(source_path, destination_path)
-        
     # Check and prepare 3to2 module.
     try:
         from lib3to2.main import main as lib3to2_main
@@ -96,6 +94,68 @@ def preprocess_source(base_dir=os.curdir):
         
         from lib3to2.main import main as lib3to2_main
         
-    lib3to2_main("lib3to2.fixes", [destination_path])
+    # Remove old preprocessed sources.
+    if not os.path.exists(destination_path):
+        __copy_tree(source_path, destination_path)
+        lib3to2_main("lib3to2.fixes", [destination_path])
+    else:
+        # Remove all files that only in right side
+        # Copy all files that only in left side to right side, then
+        # 3to2 on these files
+        
+        files = []
+        dirs = []
+         
+        cmp_result = filecmp.dircmp(source_path, destination_path)
+        dirs.append(cmp_result)
+         
+        while len(dirs) > 0:
+             
+            # Get the last one compare result
+            cmp_result = dirs[-1]
+            del dirs[-1]
+             
+            # Append all sub-dirs compare results, so that we could 
+            # continue our loop.
+            dirs.extend(cmp_result.subdirs.values())
+             
+            # Remove all files that only in right side
+            for file_name in cmp_result.right_only:
+                file_path = os.path.join(cmp_result.right, file_name)
+                if os.path.isdir(file_path):
+                    shutil.rmtree(file_path, ignore_errors=True)
+                    continue
+ 
+                # Only parse files.                
+                try:
+                    os.remove(file_path)
+                except:
+                    pass
+                 
+            # Copy all files that only in left side to right side or 
+            # different files, then 3to2 on these files
+            for file_name in (cmp_result.left_only + cmp_result.diff_files):
+                left_file_path = os.path.join(cmp_result.left, file_name)
+                right_file_path = os.path.join(cmp_result.right, file_name)
+                 
+                if os.path.isdir(left_file_path):
+                    __copy_tree(left_file_path, right_file_path)
+                    files.append(right_file_path)
+                    continue
+                 
+                if not fnmatch.fnmatch(file_name, "*.py"):
+                    continue
+                 
+                try:
+                    os.remove(right_file_path)
+                except:
+                    pass
+                
+                shutil.copy2(left_file_path, right_file_path)
+                files.append(right_file_path)
+                
+        if len(files) > 0:
+            lib3to2_main("lib3to2.fixes", files)
+            
     return destination_path
 
