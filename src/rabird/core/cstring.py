@@ -1,6 +1,6 @@
 '''
 
-Provided c-style string process methods.
+Provided C-style string process methods.
 
 @date 2015-03-22
 @author Hong-She Liang <starofrainnight@gmail.com>
