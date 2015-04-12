@@ -12,8 +12,7 @@ import fnmatch
 from src.rabird.core import __version__, distutils
 from setuptools import setup, find_packages
 
-namespace = "rabird"
-package_name = '%s.%s' % (namespace, "core")
+package_name = 'rabird.core'
 
 # Convert source to v2.x if we are using python 2.x.
 source_dir = distutils.preprocess_source()
@@ -49,5 +48,5 @@ setup(
     install_requires=our_requires,
     package_dir = {'': source_dir},
     packages=our_packages,
-    namespace_packages=[namespace],
+    namespace_packages=[package_name.split(".")[0]],
     )
