@@ -17,14 +17,16 @@ import fnmatch
 PREPROCESSED_DIR = "preprocessed" 
 SOURCE_DIR = "src"
 
-# The shutil.copytree() or distutils.dir_util.copy_tree() will happen to report
-# error list below if we invoke it again and again ( at least in python 2.7.4 ):
-#
-# IOError: [Errno 2] No such file or directory: ...
-#
-# So we have to write our's copy_tree() for that purpose.
-#
 def __copy_tree(src_dir, dest_dir):
+    """
+    The shutil.copytree() or distutils.dir_util.copy_tree() will happen to report
+    error list below if we invoke it again and again ( at least in python 2.7.4 ):
+    
+    IOError: [Errno 2] No such file or directory: ...
+    
+    So we have to write our's copy_tree() for that purpose.
+    """
+    
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir)
         shutil.copystat(src_dir, dest_dir)
