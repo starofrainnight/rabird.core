@@ -42,6 +42,7 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 3',
         'Intended Audience :: Developers',
+        'Development Status :: 3 - Alpha', 
         'License :: OSI Approved :: MIT License',
         'Topic :: Software Development :: Libraries',
     ],
