@@ -1,1 +1,5 @@
 recursive-include src *.py
+include README.md
+include LICENSE
+include setup.cfg
+prune preprocessed

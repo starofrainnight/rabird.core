@@ -38,6 +38,7 @@ setup(
     author='Hong-She Liang',
     author_email='starofrainnight@gmail.com',
     url='https://github.com/starofrainnight/%s' % package_name,
+    description="The base library for rabird.* series modules",
     classifiers=[
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 3',
