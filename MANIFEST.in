@@ -1,5 +1,6 @@
-recursive-include src *.py
+recursive-include src *
 include README.md
 include LICENSE
 include setup.cfg
 prune preprocessed
+global-exclude *.pyc
