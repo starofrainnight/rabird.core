@@ -1,8 +1,4 @@
 
-
-
-__import__('pkg_resources').declare_namespace(__name__)
-
 import sys
 
 version_info = (0, 1, 7)
