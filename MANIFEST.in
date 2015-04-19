@@ -1,5 +1,5 @@
 recursive-include src *
-include README.md
+include README.rst
 include LICENSE
 include setup.cfg
 prune preprocessed
