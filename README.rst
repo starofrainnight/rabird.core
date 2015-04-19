@@ -16,5 +16,5 @@ just for production practice:
 -  Some system related stuffs
 -  Windows fixes just like "fix console can't output unicode string in
    python 2.7", etc .
--  Other miscellaneous ...
+-  Miscellaneous ...
 
