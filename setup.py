@@ -12,7 +12,7 @@ import fnmatch
 from src.rabird.core import __version__, distutils
 from setuptools import setup, find_packages
 
-package_name = 'rabird.core'
+package_name = "rabird.core"
 
 # Convert source to v2.x if we are using python 2.x.
 source_dir = distutils.preprocess_source()
@@ -21,43 +21,47 @@ source_dir = distutils.preprocess_source()
 our_packages = find_packages(where=source_dir)
     
 our_requires = [
-    'six>=1.3.0'
+    "six>=1.3.0"
     ]
 
 if sys.platform == "win32":
-    our_requires.append('pywin32>=218')
+    our_requires.append("pywin32>=218")
 else:
-    our_requires.append('linux-metrics')
+    our_requires.append("linux-metrics")
     
 if sys.version_info[0] == 2:
-    our_requires.append('enum34')
+    our_requires.append("enum34")
     
 long_description=(
-     open('README.rst', 'r').read()
-     + '\n' +
-     open('CHANGES.rst', 'r').read()
+     open("README.rst", "r").read()
+     + "\n" +
+     open("CHANGES.rst", "r").read()
      )
 
 setup(
     name=package_name,
     version=__version__,
-    author='Hong-She Liang',
-    author_email='starofrainnight@gmail.com',
-    url='https://github.com/starofrainnight/%s' % package_name,
+    author="Hong-She Liang",
+    author_email="starofrainnight@gmail.com",
+    url="https://github.com/starofrainnight/%s" % package_name,
     description="The base library for rabird.* series modules",
     long_description=long_description,
     classifiers=[
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 3',
-        'Intended Audience :: Developers',
-        'Development Status :: 3 - Alpha', 
-        'License :: OSI Approved :: MIT License',
-        'Topic :: Software Development :: Libraries',
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Developers",        
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent", 
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: Implementation :: CPython",        
+        "Framework :: Rabird",
+        "Topic :: Software Development :: Libraries",
+        "Topic :: Software Development :: Libraries :: Python Modules", 
     ],
     install_requires=our_requires,
-    package_dir = {'': source_dir},
+    package_dir = {"": source_dir},
     packages=our_packages,
     namespace_packages=[package_name.split(".")[0]],
-    # If we don't set the zip_safe to False, pip can't find us.
+    # If we don"t set the zip_safe to False, pip can"t find us.
     zip_safe=False,
     )
