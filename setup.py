@@ -51,4 +51,6 @@ setup(
     package_dir = {'': source_dir},
     packages=our_packages,
     namespace_packages=[package_name.split(".")[0]],
+    # If we don't set the zip_safe to False, pip can't find us.
+    zip_safe=False,
     )
