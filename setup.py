@@ -31,6 +31,12 @@ else:
     
 if sys.version_info[0] == 2:
     our_requires.append('enum34')
+    
+long_description=(
+     open('README.rst', 'r').read()
+     + '\n' +
+     open('CHANGES.rst', 'r').read()
+     )
 
 setup(
     name=package_name,
@@ -39,6 +45,7 @@ setup(
     author_email='starofrainnight@gmail.com',
     url='https://github.com/starofrainnight/%s' % package_name,
     description="The base library for rabird.* series modules",
+    long_description=long_description,
     classifiers=[
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 3',
