@@ -7,7 +7,7 @@ Provided C-style string process methods.
 '''
 
 def escape(text):
-    return text.encode('unicode-escape').replace('"', '\\"')
+    return text.encode('unicode-escape').replace('"', '\\"').replace("'", "\\'")
 
 def unescape(text):
     return text.decode('unicode-escape')    
