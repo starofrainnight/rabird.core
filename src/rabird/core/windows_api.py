@@ -56,7 +56,8 @@ def RunAsAdmin(command_line=None, wait=True):
 	if command_line is None:
 		command_line = [python_exe] + sys.argv
 	elif type(command_line) not in (types.TupleType, types.ListType):
-		raise ValueError, "command_line is not a sequence."
+		raise ValueError("command_line is not a sequence.")
+	
 	cmd = '"%s"' % (command_line[0],)
 	# XXX TODO: isn't there a function or something we can call to massage command line params?
 	params = " ".join(['"%s"' % (x,) for x in command_line[1:]])
