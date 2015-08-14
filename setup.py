@@ -9,6 +9,11 @@ import sys
 import shutil
 import logging
 import fnmatch
+
+# First remove "./rabird" directory, otherwise it would failed to import
+# global rabird.core.
+shutil.rmtree("./rabird", ignore_errors=True)
+
 from src.rabird.core import __version__, distutils
 from setuptools import setup, find_packages
 

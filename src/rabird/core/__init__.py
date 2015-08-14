@@ -6,6 +6,7 @@ __version__ = '.'.join(map(str, version_info))
 __monkey_patched = False
 
 try:
+	# Import global rabird.core, not ours
 	import rabird.core
 	
 	if sys.platform == 'win32' :
