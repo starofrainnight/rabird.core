@@ -1,7 +1,7 @@
 rabird.core
 -----------
 
-The base library for rabird.\* series modules.
+The base library for rabird series modules.
 
 This library provided a series helper utilties for production, they are
 disordered and grow up while other module needs, there are no plan and
