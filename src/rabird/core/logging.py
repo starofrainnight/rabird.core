@@ -20,7 +20,7 @@ def load_default_config():
 		'style':None,
 	} 
 	
-	for k in arguments.keys():
+	for k in list(arguments.keys()):
 		try:
 			envionment_text = 'PYTHON_LOGGING_{}'.format(k.upper())
 			arguments[k] = os.environ[envionment_text]
@@ -36,13 +36,13 @@ def load_default_config():
 			del arguments[k]
 			
 	# Set default level to logging.INFO .
-	if 'level' not in arguments.keys():
+	if 'level' not in list(arguments.keys()):
 		arguments['level'] = global_logging.INFO
 		
 	global_logging.basicConfig(**arguments)
 	
 	# Added console handler only there have filename argument. 
-	if 'filename' in arguments.keys():
+	if 'filename' in list(arguments.keys()):
 		global_logging.getLogger().addHandler(global_logging.StreamHandler(sys.stdout))
 		
 		

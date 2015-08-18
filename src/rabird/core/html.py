@@ -23,9 +23,9 @@ html_escape_table = {
 	'\n': "<BR />", 
 	' ': "&nbsp;", 
 }
-html_unescape_table = {v:k for k, v in html_escape_table.items()}
-for k, v in html_entities.codepoint2name.items():
-	html_unescape_table['&%s;' % (v)] = unichr(k)
+html_unescape_table = {v:k for k, v in list(html_escape_table.items())}
+for k, v in list(html_entities.codepoint2name.items()):
+	html_unescape_table['&%s;' % (v)] = chr(k)
 	
 def escape(text):
 	return xml.sax.saxutils.escape(text)
@@ -43,7 +43,7 @@ def display_unescape(text):
 	while( i < len(text) ):
 		try:
 			skip_len = 0
-			for k, v in html_unescape_table.items():
+			for k, v in list(html_unescape_table.items()):
 				if text[i:i+len(k)] == k:
 					skip_len = len(k) - 1
 					output_text += v

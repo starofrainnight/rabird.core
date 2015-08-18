@@ -13,8 +13,8 @@ def accepts(*argstypes, **kwargstypes):
         def wrapped(*args, **kwargs):
             if len(args) > len(argstypes):
                 raise TypeError("%s() takes at most %s non-keyword arguments (%s given)" % (func.__name__, len(argstypes), len(args)))
-            argspairs = zip(args, argstypes)
-            for k,v in kwargs.items():
+            argspairs = list(zip(args, argstypes))
+            for k,v in list(kwargs.items()):
                 if k not in kwargstypes:
                     raise TypeError("Unexpected keyword argument '%s' for %s()" % (k, func.__name__))
                 argspairs.append((v, kwargstypes[k]))

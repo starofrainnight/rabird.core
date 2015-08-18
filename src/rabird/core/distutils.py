@@ -119,7 +119,7 @@ def preprocess_source(base_dir=os.curdir):
              
             # Append all sub-dirs compare results, so that we could 
             # continue our loop.
-            dirs.extend(cmp_result.subdirs.values())
+            dirs.extend(list(cmp_result.subdirs.values()))
              
             # Remove all files that only in right side
             for file_name in cmp_result.right_only:

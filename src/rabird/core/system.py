@@ -16,19 +16,19 @@ def get_single_argument_win32():
 	script_file_name = os.path.basename(sys.argv[0])
 	pos = command_line.rfind( script_file_name )
 	
-	result = u""
+	result = ""
 	if pos >= 0 :
 		begin_index = pos + len(script_file_name) + 1
 		end_index = len(command_line)
 		result = command_line[begin_index:end_index].strip()
 		if len(result) > 0:
-			if result[0] == u"\"":
+			if result[0] == "\"":
 				result = result[1:len(result)-1]
 	
 	return result
 	
 def get_single_argument_others():
-	result = u""
+	result = ""
 	if len(sys.argv) > 2 :
 		result = sys.argv[1]
 		

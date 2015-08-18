@@ -96,7 +96,7 @@ class StdoutThread(threading.Thread):
 				
 				#self.old_stdout.write('gogogo : %s,  %s\n' % (str(a_line), str(type(s))))
 				
-				if(type(s) == types.UnicodeType) :
+				if(type(s) == str) :
 					if self.screen_buffer is not None:
 						# While debuging in Aptana Studio or some other situation, 
 						# the screen buffer will contain an invalid handle lead to 
@@ -130,7 +130,7 @@ class StdioFile(io.FileIO):
 		io.FileIO.__init__(self, name, mode, closefd) 
 
 	def write(self, value):
-		if(type(value) != types.UnicodeType) :
+		if(type(value) != str) :
 			value = str(value) # changed value to str 
 			
 		# the line separator must be at the end of line !

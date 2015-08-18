@@ -25,9 +25,7 @@ class CpuTimes(object):
 		self.user = 0
 		self.system = 0
 
-class AbstractCpuTimer(object):
-	__metaclass__ = abc.ABCMeta
-	
+class AbstractCpuTimer(object, metaclass=abc.ABCMeta):
 	def __init__(self):
 		super(AbstractCpuTimer, self).__init__()
 		
@@ -101,7 +99,7 @@ def __get_cpu_ticks_max_unix():
 def __get_cpu_ticks_unix():
 	cpu_times = cpu_stat.cpu_times()
 	total_ticks = 0
-	for i in xrange(0, 7):
+	for i in range(0, 7):
 		total_ticks += cpu_times[i]		
 	return total_ticks
 	

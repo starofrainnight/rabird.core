@@ -26,7 +26,7 @@ def CommandLineToArgv( ACommandLine  ):
 	
 	result = []		
 	if 0 != arguments_memory.value :
-		for i in xrange( 1, arguments_count.value ):
+		for i in range( 1, arguments_count.value ):
 			wstring_memory = ctypes.c_void_p.from_address( arguments_memory.value + i * ctypes.sizeof(ctypes.c_void_p) )
 			result.append( ctypes.wstring_at( wstring_memory.value ) )
 
@@ -55,7 +55,7 @@ def RunAsAdmin(command_line=None, wait=True):
 
 	if command_line is None:
 		command_line = [python_exe] + sys.argv
-	elif type(command_line) not in (types.TupleType, types.ListType):
+	elif type(command_line) not in (tuple, list):
 		raise ValueError("command_line is not a sequence.")
 	
 	cmd = '"%s"' % (command_line[0],)

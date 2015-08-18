@@ -7,7 +7,7 @@
 
 
 from six.moves import configparser
-import StringIO 
+import io 
 import io
 import os
 import re
@@ -74,14 +74,14 @@ class ConfigParser(configparser.ConfigParser):
 			abuffer += line
 			
 		# In 3.x, the ConfigParser is a newstyle object
-		fp = StringIO.StringIO(abuffer)
+		fp = io.StringIO(abuffer)
 		if issubclass(ConfigParser, object):
 			super(ConfigParser, self).readfp(fp, *args, **kwargs)
 		else:
 			configparser.ConfigParser.readfp(self, fp, *args, **kwargs)
 			
 	def write(self, fileobject):
-		string_io = StringIO.StringIO()
+		string_io = io.StringIO()
 		
 		# In 3.x, the ConfigParser is a newstyle object
 		if issubclass(ConfigParser, object):
@@ -90,7 +90,7 @@ class ConfigParser(configparser.ConfigParser):
 			configparser.ConfigParser.write(self, string_io)
 		
 		abuffer = string_io.getvalue()
-		string_io = StringIO.StringIO(abuffer)
+		string_io = io.StringIO(abuffer)
 		# Remove unused UNNAMED section line. 
 		first_line = string_io.readline()
 		# Sometimes UNNAMED section do not existed,
@@ -109,7 +109,7 @@ class ConfigParser(configparser.ConfigParser):
 						
 		# Rebuild the string io and strip spaces before and after '=' ( Avoid
 		# error happends to some strict ini format parsers )
-		string_io = StringIO.StringIO(abuffer)
+		string_io = io.StringIO(abuffer)
 		
 		# You must notice that we use "\n" not the os.linesep, because "\n" will
 		# be converted to '\r\n' in window while file be opened with text mode!
