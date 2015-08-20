@@ -1,7 +1,16 @@
 #!/usr/bin/env python
 
-from ez_setup import use_setuptools
-use_setuptools()
+from ez_setup import get_best_downloader
+
+downloader = get_best_downloader()
+
+try:
+    import pip
+except:
+    # If we do not have pip, we fetch and install one. It will also install
+    # setuptools and wheel. 
+    downloader("https://bootstrap.pypa.io/get-pip.py", "get-pip.py")
+    exec(open("get-pip.py").read())
 
 import os
 import os.path
