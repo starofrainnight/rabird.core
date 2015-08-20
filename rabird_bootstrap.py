@@ -166,3 +166,11 @@ def use_pip():
         easy_download(url)
         os.system("%s %s" % (sys.executable, filename))
         
+def use_rabird():
+    try:
+        import rabird.core
+    except:
+        use_pip()    
+        import pip
+        pip.main(["install", "rabird.core"])
+                
