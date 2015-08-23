@@ -18,3 +18,10 @@ just for production practice:
    python 2.7", etc .
 -  Miscellaneous ...
 
+Notice
+================
+
+This library depends on pywin32 package, but that package can't install directly by pip or easy_insatll. You must install it manually first.
+
+pywin32: http://sourceforge.net/projects/pywin32/
+
