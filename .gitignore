@@ -5,3 +5,8 @@ build/*
 dist/*
 *.egg-info
 .settings/*
+preprocessed/
+*.bak
+*.old
+.project
+.pydevproject
