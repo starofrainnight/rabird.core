@@ -3,6 +3,13 @@
 from rabird_bootstrap import use_pip
 use_pip()
 
+# Prepare six module
+try:
+    import six
+except ImportError:
+    import pip
+    pip.main(["install", "six"])
+
 import os
 import os.path
 import sys
