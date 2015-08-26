@@ -48,7 +48,7 @@ def download_file(url, file=None):
 
         file.write(readed_buffer)
     
-class UwbpepPackages(object):    
+class GithubUwbpepPackages(object):    
     page_url = "https://github.com/starofrainnight/uwbpep/releases/tag/v1.0"
     
     def __init__(self):
@@ -177,7 +177,7 @@ class install(distutils_install):
                 failed_requires.append(arequire)
             
         if len(failed_requires) > 0:
-            packages = UwbpepPackages()
+            packages = GithubUwbpepPackages()
             packages.parse()            
               
             # Try to install failed requires from UWBPEP    
