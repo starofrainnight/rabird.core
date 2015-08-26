@@ -19,6 +19,7 @@ from setuptools.command.install import install as distutils_install
 from setuptools.command.easy_install import is_64bit
 from pkg_resources._vendor.packaging.version import Version
 from ..utils import easy_download
+from ... import windows_api
 from pip.wheel import Wheel
     
 class UwbpepPackages(object):
@@ -187,6 +188,17 @@ class install(distutils_install):
                 easy_download(url, filename)
                 
                 pip.main(["install", filename])
+                
+                # Only pywin32 needs postinstall script. 
+                if filename.startswith("pywin32"):
+                    postinstall_script_path = os.path.normpath(os.path.join(
+                            sys.base_exec_prefix, 
+                            "Scripts", 
+                            "pywin32_postinstall.py"))
+                    postinstall_script_path = postinstall_script_path.replace("/", "\\")                    
+                    windows_api.RunAsAdmin([
+                        sys.executable, 
+                        postinstall_script_path])
                                 
         # self.distribution.install_requires
         distutils_install.run(self)
