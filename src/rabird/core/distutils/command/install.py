@@ -149,7 +149,7 @@ class GithubUwbpepPackages(object):
         raise KeyError("Can't find the requirement : %s" % requirement_text)
             
 class PypiUwbpepPackages(object):    
-    page_url = "https://pypi.python.org/pypi/uwbpep/0.1.0"
+    page_url = "https://pypi.python.org/pypi/uwbpep/1.0"
     
     def __init__(self):
         pass
