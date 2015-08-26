@@ -152,9 +152,9 @@ class install(distutils_install):
             print("Downloaded : %s" % downloaded_size)
 
             file.write(readed_buffer)
-    
-    def run(self):        
-        page_url = "https://github.com/starofrainnight/uwbpep/releases/tag/v1.0"
+            
+    def _prepare_requirements(self):
+        page_url = "https://github.com/starofrainnight/uwbpep/releases/tag/v1.0" 
         
         # Try to use pip install first
         failed_requires = [] 
@@ -199,7 +199,12 @@ class install(distutils_install):
                     windows_api.RunAsAdmin([
                         sys.executable, 
                         postinstall_script_path])
-                                
+                            
+    
+    def run(self):        
+        if sys.platform == "win32":
+            self._prepare_requirements()
+            
         # self.distribution.install_requires
         distutils_install.run(self)
         
