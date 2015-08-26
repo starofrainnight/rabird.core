@@ -125,9 +125,13 @@ def get_best_downloader():
         if dl.viable():
             return dl
         
-def easy_download(url):
+def easy_download(url, target=None):
     downloader = get_best_downloader()
-    downloader(url, os.path.basename(url))
+    
+    if target is None:
+        target = os.path.basename(url)
+        
+    downloader(url, target)
     
     
 

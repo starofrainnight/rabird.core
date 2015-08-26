@@ -5,6 +5,7 @@
 
 import re
 import os
+import io
 import sys
 import math
 import urllib
@@ -13,50 +14,33 @@ import pkg_resources
 import struct
 import platform
 import six
+from six.moves import urllib
 from setuptools.command.install import install as distutils_install
 from setuptools.command.easy_install import is_64bit
 from pkg_resources._vendor.packaging.version import Version
 from ..utils import easy_download
 from pip.wheel import Wheel
-try:
-    from urllib.request import urlopen
-    from urllib.parse import urlparse
-except ImportError:
-    from urlparse import urlparse
-    from urllib import urlopen
     
 class UwbpepPackages(object):
-    def __init__(self, content):
+    def __init__(self, content, page_url):
         re_flags = re.DOTALL|re.MULTILINE
-        matched = re.search('<ol class="inline">(.*?)</ol>', content, re_flags)
-        package_names = re.findall('<a href="#.*?>(.*?)</a>', matched.group(1), re_flags)
-        matched = re.findall('javascript:dl\(\[(.*?)\], "(.*?)"\)', content, re_flags)
-        
-        base_url = "http://www.lfd.uci.edu/~gohlke/pythonlibs"
-        
-        open("kknd.html", "wb").write(content.encode("utf-8"))
+        matched = re.findall('<a href="([^"]*?)" rel="nofollow">', content, re_flags)
         
         # Initialize packages with names
         packages = {}
-        package_groups = {}
 
         # Decrypt links
         for amatch in matched:
-            numbers = []
-            number_texts = amatch[0].split(",")
-            for number_text in number_texts:
-                numbers.append(int(number_text))
-                        
-            url = os.path.join(base_url, self._decode_url(numbers, amatch[1]))
+            url_parties = list(urllib.parse.urlparse(page_url))
+            url_parties[2] = amatch
+            url = urllib.parse.urlunparse(url_parties)
             filename = os.path.basename(url)
             
             filebasename, fileextname = os.path.splitext(filename)
-            if "pywin32" in filebasename:
-                print(amatch[0])
-                print(amatch[1])
-                print(url)
-                    
-            if fileextname not in [".whl", ".exe"]:
+            if fileextname not in [".whl", ".exe", ".zip"]:
+                continue
+            
+            if len(filename.split("-")) < 5:
                 continue
             
             if fileextname == ".exe":
@@ -76,6 +60,8 @@ class UwbpepPackages(object):
                     'none',
                     wheel_info[2]
                     )
+            elif fileextname == ".zip":
+                filename = "%s%s" % (filebasename, ".whl")
                 
             wheel = Wheel(filename)
             
@@ -87,31 +73,7 @@ class UwbpepPackages(object):
             
             packages[package_name]["wheels"].append((wheel, url))
             
-        # Analyse dependences
-        matched = re.findall('<li>(<a id=.*?)<li>', content, re_flags)
-        for amatch in matched:
-            if 'Requires <a href="#' not in amatch:
-                continue
-            
-            package_name = re.search('<a id=["\'](.*?)["\']>', amatch).group(1)   
-            requirements = re.findall('<a href="#(.*?)">', amatch)
-            try:
-                packages[package_name]["requirements"] = requirements
-            except KeyError:
-                # FIXME: We should record the package groups, otherwise some requirement
-                # can't be found!
-                pass
-            
         self.packages = packages        
-        
-    def _decode_url(self, ml, mi):        
-        mi = mi.replace('&lt;','<').replace('&gt;','>').replace('&amp;','&')
-        
-        ot=""
-        for j in range(0, len(mi)):
-            ot += chr(ml[ord(mi[j])-48])
-            
-        return ot
         
     def search_url(self, requirement_text):
         requirement = pkg_resources.Requirement.parse(requirement_text)
@@ -147,57 +109,52 @@ class UwbpepPackages(object):
 
 class install(distutils_install):
     """
+    The install command provide extension packages automatic install from
+    our custom package page.
     
+    We make a cached page at 
+    
+    https://github.com/starofrainnight/uwbpep/releases/tag/v1.0
+    
+    which copied some needed packages from 
+    
+    http://www.lfd.uci.edu/~gohlke/pythonlibs/
+
     Abbreviations:
     
     uwbpep : Unofficial Windows Binaries for Python Extension Packages
     
-    http://www.lfd.uci.edu/~gohlke/pythonlibs/
     """
 
-    def download_file(self, url):
+    def download_file(self, url, file=None):
         """Helper to download large files
         the only arg is a url
         the downloaded_file will also be downloaded_size
         in chunks and print out how much remains
         """
         
-        downloaded_blocks = []
+        if (file is None):
+            file = open(os.path.basename(url), 'wb')        
         
-        try:
-            req = urllib.request.urlopen(url)
-            
-            if six.PY2:
-                total_size = int(req.info().getheader("Content-Length").strip())
-            else:
-                total_size = int(req.getheader("Content-Length").strip())
-                
-            downloaded_size = 0
-            block_size = 16 * 1024 # 16k each chunk
-            
-            print("Total size : %s" % (total_size))
-            
-            while True:
-                readed_buffer = req.read(block_size)
-                if not readed_buffer:
-                    break
-                
-                downloaded_size += len(readed_buffer)
-                
-                print("Downloaded : %s%%" % (math.floor((float(downloaded_size) / float(total_size)) * 100)))
-                
-                downloaded_blocks.append(readed_buffer)
-                    
-        except urllib.error.HTTPError as e:
-            print("HTTP Error: %s %s" % (e.code, url))
-            return False
-        except urllib.error.URLError as e:
-            print("URL Error: %s %s" % (e.reason, url))
-            return False
+        req = urllib.request.urlopen(url)
         
-        return b''.join(downloaded_blocks)
+        downloaded_size = 0
+        block_size = 16 * 1024 # 16k each chunk
+        
+        while True:
+            readed_buffer = req.read(block_size)
+            if not readed_buffer:
+                break
+            
+            downloaded_size += len(readed_buffer)
+            
+            print("Downloaded : %s" % downloaded_size)
+
+            file.write(readed_buffer)
     
     def run(self):        
+        page_url = "https://github.com/starofrainnight/uwbpep/releases/tag/v1.0"
+        
         # Try to use pip install first
         failed_requires = [] 
         for arequire in self.distribution.install_requires:
@@ -206,22 +163,32 @@ class install(distutils_install):
             if pip.main(["install", arequire]) != 0:
                 failed_requires.append(arequire)
             
-        failed_requires.append("pywin32")
         if len(failed_requires) > 0:
             print('Downloading list page of "Unofficial Windows Binaries for Python Extension Packages" ...')
-            content = self.download_file("http://www.lfd.uci.edu/~gohlke/pythonlibs").decode('utf-8')
+            bytes_io = io.BytesIO()            
+            try:
+                self.download_file(page_url, bytes_io)
+                content = bytes_io.getvalue().decode('utf-8')  
+            finally:
+                bytes_io.close()
             print("Download finished. \nParsing ...")
-            packages = UwbpepPackages(content)
+            packages = UwbpepPackages(content, page_url)
               
             # Try to install failed requires from UWBPEP    
             for arequire in failed_requires:                
                 url = packages.search_url(arequire)
                 filename = os.path.basename(url)
-#                 easy_download(url)
-#                 if '.whl' == os.path.splitext(filename)[1]:
-#                     pip.main("install", filename)
+                print("Downloading ... %s " % url)
+
+                if '.zip' == os.path.splitext(filename)[1]:
+                    filebasename, fileextname = os.path.splitext(filename)
+                    filename = "%s%s" % (filebasename, ".whl")
+                
+                easy_download(url, filename)
+                
+                pip.main(["install", filename])
                                 
         # self.distribution.install_requires
-#         distutils_install.run(self)
+        distutils_install.run(self)
         
         
