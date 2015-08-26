@@ -117,7 +117,7 @@ class GithubUwbpepPackages(object):
             
         self.packages = packages        
         
-    def search_url(self, requirement_text):
+    def search_wheel(self, requirement_text):
         requirement = pkg_resources.Requirement.parse(requirement_text)
         wheel_contexts = self.packages[requirement.key]["wheels"]
         
@@ -144,7 +144,7 @@ class GithubUwbpepPackages(object):
             if not requirement.specifier.contains(wheel_version):
                 continue        
             
-            return url
+            return wheel
         
         raise KeyError("Can't find the requirement : %s" % requirement_text)
             
@@ -218,7 +218,7 @@ class PypiUwbpepPackages(object):
             
         self.packages = packages        
         
-    def search_url(self, requirement_text):
+    def search_wheel(self, requirement_text):
         requirement = pkg_resources.Requirement.parse(requirement_text)
         wheel_contexts = self.packages[requirement.key]["wheels"]
         
@@ -245,7 +245,7 @@ class PypiUwbpepPackages(object):
             if not requirement.specifier.contains(wheel_version):
                 continue        
             
-            return url
+            return wheel
         
         raise KeyError("Can't find the requirement : %s" % requirement_text)
        
