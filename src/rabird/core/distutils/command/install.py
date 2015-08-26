@@ -283,14 +283,11 @@ class install(distutils_install):
               
             # Try to install failed requires from UWBPEP    
             for arequire in failed_requires:                
-                url = packages.search_url(arequire)
-                filename = os.path.basename(url)
+                wheel, url = packages.find_package(arequire)
+                filename = wheel.filename
+                
                 print("Downloading ... %s " % url)
 
-                if '.zip' == os.path.splitext(filename)[1]:
-                    filebasename, fileextname = os.path.splitext(filename)
-                    filename = "%s%s" % (filebasename, ".whl")
-                
                 easy_download(url, filename)
                 
                 pip.main(["install", filename])
