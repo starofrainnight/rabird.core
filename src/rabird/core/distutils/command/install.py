@@ -177,7 +177,6 @@ class PypiUwbpepPackages(object):
             filename = os.path.basename(url.split("#")[0])
             # Removed the first "uwbpep" tag!
             filename = filename[len("uwbpep"):]
-            print(filename)
             
             filebasename, fileextname = os.path.splitext(filename)
             if fileextname not in [".whl", ".exe", ".zip"]:
