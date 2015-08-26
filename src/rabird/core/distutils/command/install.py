@@ -21,9 +21,50 @@ from pkg_resources._vendor.packaging.version import Version
 from ..utils import easy_download
 from ... import windows_api
 from pip.wheel import Wheel
+
+def download_file(url, file=None):
+    """Helper to download large files
+    the only arg is a url
+    the downloaded_file will also be downloaded_size
+    in chunks and print out how much remains
+    """
     
-class UwbpepPackages(object):
-    def __init__(self, content, page_url):
+    if (file is None):
+        file = open(os.path.basename(url), 'wb')        
+    
+    req = urllib.request.urlopen(url)
+    
+    downloaded_size = 0
+    block_size = 16 * 1024 # 16k each chunk
+    
+    while True:
+        readed_buffer = req.read(block_size)
+        if not readed_buffer:
+            break
+        
+        downloaded_size += len(readed_buffer)
+        
+        print("Downloaded : %s" % downloaded_size)
+
+        file.write(readed_buffer)
+    
+class UwbpepPackages(object):    
+    page_url = "https://github.com/starofrainnight/uwbpep/releases/tag/v1.0"
+    
+    def __init__(self):
+        pass
+        
+    def parse(self):
+        print('Downloading list page of "Unofficial Windows Binaries for Python Extension Packages" ...')
+        bytes_io = io.BytesIO()            
+        try:
+            download_file(self.page_url, bytes_io)
+            content = bytes_io.getvalue().decode('utf-8')  
+        finally:
+            bytes_io.close()
+            
+        print("Download finished. \nParsing ...")
+            
         re_flags = re.DOTALL|re.MULTILINE
         matched = re.findall('<a href="([^"]*?)" rel="nofollow">', content, re_flags)
         
@@ -32,7 +73,7 @@ class UwbpepPackages(object):
 
         # Decrypt links
         for amatch in matched:
-            url_parties = list(urllib.parse.urlparse(page_url))
+            url_parties = list(urllib.parse.urlparse(self.page_url))
             url_parties[2] = amatch
             url = urllib.parse.urlunparse(url_parties)
             filename = os.path.basename(url)
@@ -126,36 +167,7 @@ class install(distutils_install):
     uwbpep : Unofficial Windows Binaries for Python Extension Packages
     
     """
-
-    def download_file(self, url, file=None):
-        """Helper to download large files
-        the only arg is a url
-        the downloaded_file will also be downloaded_size
-        in chunks and print out how much remains
-        """
-        
-        if (file is None):
-            file = open(os.path.basename(url), 'wb')        
-        
-        req = urllib.request.urlopen(url)
-        
-        downloaded_size = 0
-        block_size = 16 * 1024 # 16k each chunk
-        
-        while True:
-            readed_buffer = req.read(block_size)
-            if not readed_buffer:
-                break
-            
-            downloaded_size += len(readed_buffer)
-            
-            print("Downloaded : %s" % downloaded_size)
-
-            file.write(readed_buffer)
-            
     def _prepare_requirements(self):
-        page_url = "https://github.com/starofrainnight/uwbpep/releases/tag/v1.0" 
-        
         # Try to use pip install first
         failed_requires = [] 
         for arequire in self.distribution.install_requires:
@@ -165,15 +177,8 @@ class install(distutils_install):
                 failed_requires.append(arequire)
             
         if len(failed_requires) > 0:
-            print('Downloading list page of "Unofficial Windows Binaries for Python Extension Packages" ...')
-            bytes_io = io.BytesIO()            
-            try:
-                self.download_file(page_url, bytes_io)
-                content = bytes_io.getvalue().decode('utf-8')  
-            finally:
-                bytes_io.close()
-            print("Download finished. \nParsing ...")
-            packages = UwbpepPackages(content, page_url)
+            packages = UwbpepPackages()
+            packages.parse()            
               
             # Try to install failed requires from UWBPEP    
             for arequire in failed_requires:                
