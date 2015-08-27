@@ -8,8 +8,6 @@ import os
 import os.path
 import platform
 import subprocess
-import math
-from six.moves import urllib
 
 def _clean_check(cmd, target):
     """
@@ -93,23 +91,7 @@ def download_file_insecure(url, target):
     Use Python to download the file, even though it cannot authenticate the
     connection.
     """
-    try:
-        from urllib.request import urlopen
-    except ImportError:
-        from urllib2 import urlopen
-    src = dst = None
-    try:
-        src = urlopen(url)
-        # Read/write all in one block, so we don't create a corrupt file
-        # if the download is interrupted.
-        data = src.read()
-        dst = open(target, "wb")
-        dst.write(data)
-    finally:
-        if src:
-            src.close()
-        if dst:
-            dst.close()
+    download_file_insecure_to_io(url, open(target, "wb"))
 
 download_file_insecure.viable = lambda: True
 
@@ -125,11 +107,32 @@ def get_best_downloader():
         if dl.viable():
             return dl
         
-def easy_download(url):
+def download(url, target=None):
     downloader = get_best_downloader()
-    downloader(url, os.path.basename(url))
     
+    if target is None:
+        target = os.path.basename(url)
+        
+    downloader(url, target)
     
-
+def download_file_insecure_to_io(url, target_file=None):
+    """
+    Use Python to download the file, even though it cannot authenticate the
+    connection.
+    """
     
+    try:
+        from urllib.request import urlopen
+    except ImportError:
+        from urllib2 import urlopen
+    src = None
+    try:
+        src = urlopen(url)
+        # Read/write all in one block, so we don't create a corrupt file
+        # if the download is interrupted.
+        data = src.read()
+        target_file.write(data)
+    finally:
+        if src:
+            src.close()   
     
