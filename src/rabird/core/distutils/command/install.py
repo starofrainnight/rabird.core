@@ -18,7 +18,7 @@ from six.moves import urllib
 from setuptools.command.install import install as distutils_install
 from setuptools.command.easy_install import is_64bit
 from pkg_resources._vendor.packaging.version import Version
-from ..utils import easy_download
+from ..downloader import easy_download
 from ... import windows_api
 from pip.wheel import Wheel
 
