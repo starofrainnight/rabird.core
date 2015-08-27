@@ -18,36 +18,10 @@ from six.moves import urllib
 from setuptools.command.install import install as distutils_install
 from setuptools.command.easy_install import is_64bit
 from pkg_resources._vendor.packaging.version import Version
-from ..downloader import easy_download
+from ..downloader import easy_download, download_file_insecure_to_io
 from ... import windows_api
 from pip.wheel import Wheel
 
-def download_file(url, file=None):
-    """Helper to download large files
-    the only arg is a url
-    the downloaded_file will also be downloaded_size
-    in chunks and print out how much remains
-    """
-    
-    if (file is None):
-        file = open(os.path.basename(url), 'wb')        
-    
-    req = urllib.request.urlopen(url)
-    
-    downloaded_size = 0
-    block_size = 16 * 1024 # 16k each chunk
-    
-    while True:
-        readed_buffer = req.read(block_size)
-        if not readed_buffer:
-            break
-        
-        downloaded_size += len(readed_buffer)
-        
-        print("Downloaded : %s" % downloaded_size)
-
-        file.write(readed_buffer)
-    
 class GithubUwbpepPackages(object):    
     page_url = "https://github.com/starofrainnight/uwbpep/releases/tag/v1.0"
     
@@ -58,7 +32,7 @@ class GithubUwbpepPackages(object):
         print('Downloading list page of "Unofficial Windows Binaries for Python Extension Packages" ...')
         bytes_io = io.BytesIO()            
         try:
-            download_file(self.page_url, bytes_io)
+            download_file_insecure_to_io(self.page_url, bytes_io)
             content = bytes_io.getvalue().decode('utf-8')  
         finally:
             bytes_io.close()
@@ -158,7 +132,7 @@ class PypiUwbpepPackages(object):
         print('Downloading list page of "Unofficial Windows Binaries for Python Extension Packages" ...')
         bytes_io = io.BytesIO()            
         try:
-            download_file(self.page_url, bytes_io)
+            download_file_insecure_to_io(self.page_url, bytes_io)
             content = bytes_io.getvalue().decode('utf-8')  
         finally:
             bytes_io.close()
