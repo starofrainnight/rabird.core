@@ -18,7 +18,7 @@ from six.moves import urllib
 from setuptools.command.install import install as distutils_install
 from setuptools.command.easy_install import is_64bit
 from pkg_resources._vendor.packaging.version import Version
-from ..downloader import easy_download, download_file_insecure_to_io
+from ..downloader import download, download_file_insecure_to_io
 from ... import windows_api
 from pip.wheel import Wheel
 
@@ -261,7 +261,7 @@ class install(distutils_install):
                 
                 print("Downloading ... %s " % url)
 
-                easy_download(url, filename)
+                download(url, filename)
                 
                 pip.main(["install", filename])
                 
