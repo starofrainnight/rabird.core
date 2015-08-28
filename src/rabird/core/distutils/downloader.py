@@ -21,17 +21,24 @@ def _clean_check(cmd, target):
             os.unlink(target)
         raise
 
-def download_file_powershell(url, target):
+def download_file_powershell(url, target, headers=None):
     """
     Download the file at url to target using Powershell (which will validate
     trust). Raise an exception if the command cannot complete.
     """
     target = os.path.abspath(target)
+
+    powershell_cmd = "$request = (new-object System.Net.WebClient);"
+    for k, v in headers.items():
+        powershell_cmd += "$request.headers['%s'] = '%s';" % (k, v)    
+    powershell_cmd += "$request.DownloadFile(%(url)r, %(target)r)" % vars()
+    
     cmd = [
         'powershell',
         '-Command',
-        "(new-object System.Net.WebClient).DownloadFile(%(url)r, %(target)r)" % vars(),
+        powershell_cmd, 
     ]
+    
     _clean_check(cmd, target)
 
 def has_powershell():
@@ -50,8 +57,12 @@ def has_powershell():
 
 download_file_powershell.viable = has_powershell
 
-def download_file_curl(url, target):
+def download_file_curl(url, target, headers=None):
     cmd = ['curl', url, '--silent', '--output', target]
+    if headers is not None:
+        for k, v in headers.items():
+            cmd += ['-H', '"%s: %s"' % (k, v)]
+              
     _clean_check(cmd, target)
 
 def has_curl():
@@ -68,8 +79,15 @@ def has_curl():
 
 download_file_curl.viable = has_curl
 
-def download_file_wget(url, target):
-    cmd = ['wget', url, '--quiet', '--output-document', target]
+def download_file_wget(url, target, headers=None):
+    cmd = ['wget', url, '--quiet']
+    
+    if headers is not None:
+        for k, v in headers.items():
+            cmd += ["--header='%s: %s'" % (k, v)]
+            
+    cmd += ['--output-document', target]
+    
     _clean_check(cmd, target)
 
 def has_wget():
@@ -86,12 +104,12 @@ def has_wget():
 
 download_file_wget.viable = has_wget
 
-def download_file_insecure(url, target):
+def download_file_insecure(url, target, headers=None):
     """
     Use Python to download the file, even though it cannot authenticate the
     connection.
     """
-    download_file_insecure_to_io(url, open(target, "wb"))
+    download_file_insecure_to_io(url, open(target, "wb"), headers)
 
 download_file_insecure.viable = lambda: True
 
@@ -107,15 +125,15 @@ def get_best_downloader():
         if dl.viable():
             return dl
         
-def download(url, target=None):
+def download(url, target=None, headers=None):
     downloader = get_best_downloader()
     
     if target is None:
         target = os.path.basename(url)
         
-    downloader(url, target)
+    downloader(url, target, headers)
     
-def download_file_insecure_to_io(url, target_file=None):
+def download_file_insecure_to_io(url, target_file=None, headers=None):
     """
     Use Python to download the file, even though it cannot authenticate the
     connection.
@@ -123,11 +141,20 @@ def download_file_insecure_to_io(url, target_file=None):
     
     try:
         from urllib.request import urlopen
+        from urllib.request import Request
     except ImportError:
         from urllib2 import urlopen
+        from urllib2 import Request
     src = None
     try:
-        src = urlopen(url)
+        req = Request(
+            url, 
+            data=None, 
+            headers=headers
+        )
+        
+        src = urlopen(req)
+        
         # Read/write all in one block, so we don't create a corrupt file
         # if the download is interrupted.
         data = src.read()
