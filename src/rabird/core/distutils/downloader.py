@@ -29,7 +29,7 @@ def download_file_powershell(url, target, headers=None):
     target = os.path.abspath(target)
 
     powershell_cmd = "$request = (new-object System.Net.WebClient);"
-    for k, v in iter(headers):
+    for k, v in headers.items():
         powershell_cmd += "$request.headers['%s'] = '%s';" % (k, v)    
     powershell_cmd += "$request.DownloadFile(%(url)r, %(target)r)" % vars()
     
@@ -60,7 +60,7 @@ download_file_powershell.viable = has_powershell
 def download_file_curl(url, target, headers=None):
     cmd = ['curl', url, '--silent', '--output', target]
     if headers is not None:
-        for k, v in iter(headers):
+        for k, v in headers.items():
             cmd += ['-H', '"%s: %s"' % (k, v)]
               
     _clean_check(cmd, target)
@@ -83,7 +83,7 @@ def download_file_wget(url, target, headers=None):
     cmd = ['wget', url, '--quiet']
     
     if headers is not None:
-        for k, v in iter(headers):
+        for k, v in headers.items():
             cmd += ["--header='%s: %s'" % (k, v)]
             
     cmd += ['--output-document', target]
