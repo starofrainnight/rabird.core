@@ -106,7 +106,7 @@ class BaseUwbpepServer(object):
             
         self.packages = packages  
         
-    def find_package(self, requirement_text):
+    def _find_package(self, requirement_text):
         requirement = pkg_resources.Requirement.parse(requirement_text)
         wheel_contexts = self.packages[requirement.key]["wheels"]
         
@@ -138,7 +138,7 @@ class BaseUwbpepServer(object):
         raise KeyError("Can't find the requirement : %s" % requirement_text)
     
     def install(self, requirement):
-        wheel, url = self.find_package(requirement)
+        wheel, url = self._find_package(requirement)
         filename = wheel.filename
         
         print("Downloading ... %s " % url)
