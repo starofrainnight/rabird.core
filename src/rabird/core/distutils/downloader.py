@@ -83,8 +83,8 @@ def download_file_wget(url, target, headers=None):
     cmd = ['wget', url, '--quiet']
     
     if headers is not None:
-        if 'User-Agent' in headers:
-            cmd += ['--user-agent="%s"' % headers['User-Agent']]
+        for k, v in iter(headers):
+            cmd += ["--header='%s: %s'" % (k, v)]
             
     cmd += ['--output-document', target]
     
