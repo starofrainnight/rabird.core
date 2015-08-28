@@ -22,11 +22,15 @@ from ..downloader import download, download_file_insecure_to_io
 from ... import windows_api
 from pip.wheel import Wheel
 
-class PythonlibsPackages(object):    
+class BasePackages(object):
+    def __init__(self):
+        pass
+
+class PythonlibsPackages(BasePackages):    
     page_url = "http://www.lfd.uci.edu/~gohlke/pythonlibs"
     
     def __init__(self):
-        pass
+        super(BasePackages, self).__init__()
     
     def _decode_url(self, ml, mi):
         mi = mi.replace('&lt;','<').replace('&gt;','>').replace('&amp;','&')
