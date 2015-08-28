@@ -68,7 +68,7 @@ class BasePackages(object):
             url, filename = self._decode_url_and_filename(amatch)
             
             filebasename, fileextname = os.path.splitext(filename)
-            if fileextname not in [".whl"]:
+            if fileextname not in [".whl", ".zip", ".exe"]:
                 continue
             
             if len(filename.split("-")) < 5:
@@ -191,106 +191,25 @@ class PythonlibsPackages(BasePackages):
         
         return (url, filename)
 
-class GithubUwbpepPackages(object):    
-    page_url = "https://github.com/starofrainnight/uwbpep/releases/tag/v1.0"
-    
+class GithubUwbpepPackages(BasePackages):    
     def __init__(self):
-        pass
-        
-    def parse(self):
-        print('Downloading list page of "Unofficial Windows Binaries for Python Extension Packages" ...')
-        bytes_io = io.BytesIO()            
-        try:
-            download_file_insecure_to_io(self.page_url, bytes_io)
-            content = bytes_io.getvalue().decode('utf-8')  
-        finally:
-            bytes_io.close()
-            
-        print("Download finished. \nParsing ...")
-            
+        super(BasePackages, self).__init__()
+    
+    def _get_page_url(self):
+        return "https://github.com/starofrainnight/uwbpep/releases/tag/v1.0" 
+    
+    def _parse_urls(self, content):
         re_flags = re.DOTALL|re.MULTILINE
-        matched = re.findall('<a href="([^"]*?)" rel="nofollow">', content, re_flags)
+        return re.findall(r'<a href="([^"]*?)" rel="nofollow">', content, re_flags)        
+    
+    def _decode_url_and_filename(self, amatch):
+        url_parties = list(urllib.parse.urlparse(self._get_page_url()))
+        url_parties[2] = amatch
+        url = urllib.parse.urlunparse(url_parties)
+        filename = os.path.basename(url)
         
-        # Initialize packages with names
-        packages = {}
-
-        # Decrypt links
-        for amatch in matched:
-            url_parties = list(urllib.parse.urlparse(self.page_url))
-            url_parties[2] = amatch
-            url = urllib.parse.urlunparse(url_parties)
-            filename = os.path.basename(url)
-            
-            filebasename, fileextname = os.path.splitext(filename)
-            if fileextname not in [".whl", ".exe", ".zip"]:
-                continue
-            
-            if len(filename.split("-")) < 5:
-                continue
-            
-            if fileextname == ".exe":
-                # Fixed *.exe name to fit for Wheel() requirement! A slight trick
-                # to support *.exe package. 
-                
-                filebasename = filebasename.replace('.win-amd64', '-win_amd64')
-                filebasename = filebasename.replace('.win', '-win')
-                filebasename = filebasename.replace('-py2.', '-cp2')
-                filebasename = filebasename.replace('-py3.', '-cp3')
-                
-                wheel_info = filebasename.split('-')
-                filename = "%s-%s-%s-%s-%s.whl" % (
-                    wheel_info[0],
-                    wheel_info[1],
-                    wheel_info[3],
-                    'none',
-                    wheel_info[2]
-                    )
-            elif fileextname == ".zip":
-                filename = "%s%s" % (filebasename, ".whl")
-                
-            wheel = Wheel(filename)
-            
-            package_name = wheel.name.lower().replace("_", "-")
-            if package_name not in packages:
-                packages[package_name] = {}
-                packages[package_name]["wheels"] = []
-                packages[package_name]["requirements"] = []  
-            
-            packages[package_name]["wheels"].append((wheel, url))
-            
-        self.packages = packages        
+        return (url, filename)      
         
-    def find_package(self, requirement_text):
-        requirement = pkg_resources.Requirement.parse(requirement_text)
-        wheel_contexts = self.packages[requirement.key]["wheels"]
-        
-        if is_64bit():
-            python_platform = "64"
-        else:
-            python_platform = "32"
-            
-        python_versions = set([
-            "cp%s" % platform.python_version_tuple()[0],
-            "cp%s%s" % (platform.python_version_tuple()[0], platform.python_version_tuple()[1]),
-            "py%s" % platform.python_version_tuple()[0],
-            "py%s%s" % (platform.python_version_tuple()[0], platform.python_version_tuple()[1]),
-            ])        
-                
-        for wheel, url in wheel_contexts:
-            if python_platform not in wheel.plats[0]:
-                continue
-            
-            if len(set(wheel.pyversions) & python_versions) <= 0:
-                continue
-            
-            wheel_version = Version(wheel.version)
-            if not requirement.specifier.contains(wheel_version):
-                continue        
-            
-            return (wheel, url)
-        
-        raise KeyError("Can't find the requirement : %s" % requirement_text)
-            
 class PypiUwbpepPackages(BasePackages):    
     def __init__(self):
         super(BasePackages, self).__init__()
@@ -338,7 +257,7 @@ class install(distutils_install):
                 failed_requires.append(arequire)
             
         if len(failed_requires) > 0:
-            packages = PypiUwbpepPackages()
+            packages = GithubUwbpepPackages()
             packages.parse()            
               
             # Try to install failed requires from UWBPEP    
