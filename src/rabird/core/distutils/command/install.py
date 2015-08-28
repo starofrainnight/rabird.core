@@ -51,7 +51,7 @@ class BaseUwbpepServer(object):
         finally:
             bytes_io.close()
             
-    def parse(self):
+    def connect(self):
         print('Downloading list page of "Unofficial Windows Binaries for Python Extension Packages" ...')
         
         content = self._get_index_page()
@@ -258,7 +258,7 @@ class install(distutils_install):
             
         if len(failed_requires) > 0:
             server = PypiUwbpepServer()
-            server.parse()            
+            server.connect()            
               
             # Try to install failed requires from UWBPEP    
             for arequire in failed_requires:
