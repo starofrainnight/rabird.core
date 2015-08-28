@@ -125,13 +125,13 @@ def get_best_downloader():
         if dl.viable():
             return dl
         
-def download(url, target=None):
+def download(url, target=None, headers=None):
     downloader = get_best_downloader()
     
     if target is None:
         target = os.path.basename(url)
         
-    downloader(url, target)
+    downloader(url, target, headers)
     
 def download_file_insecure_to_io(url, target_file=None, headers=None):
     """
