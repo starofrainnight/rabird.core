@@ -257,12 +257,12 @@ class install(distutils_install):
                 failed_requires.append(arequire)
             
         if len(failed_requires) > 0:
-            packages = PypiUwbpepServer()
-            packages.parse()            
+            server = PypiUwbpepServer()
+            server.parse()            
               
             # Try to install failed requires from UWBPEP    
             for arequire in failed_requires:
-                packages.install(arequire)
+                server.install(arequire)
                                 
     def run(self):        
         if sys.platform == "win32":
