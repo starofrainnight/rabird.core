@@ -50,8 +50,12 @@ def has_powershell():
 
 download_file_powershell.viable = has_powershell
 
-def download_file_curl(url, target):
+def download_file_curl(url, target, headers=None):
     cmd = ['curl', url, '--silent', '--output', target]
+    if headers is not None:
+        if 'User-Agent' in headers:
+            cmd += ['-A', '"%s"' % headers['User-Agent']]
+        
     _clean_check(cmd, target)
 
 def has_curl():
