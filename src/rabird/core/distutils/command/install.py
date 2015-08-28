@@ -257,7 +257,7 @@ class install(distutils_install):
                 failed_requires.append(arequire)
             
         if len(failed_requires) > 0:
-            packages = GithubUwbpepPackages()
+            packages = PypiUwbpepPackages()
             packages.parse()            
               
             # Try to install failed requires from UWBPEP    
