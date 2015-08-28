@@ -158,7 +158,7 @@ class BaseUwbpepServer(object):
                 sys.executable, 
                 postinstall_script_path])
 
-class PythonlibsPackages(BaseUwbpepServer):    
+class PythonlibsUwbpepServer(BaseUwbpepServer):    
     page_url = "http://www.lfd.uci.edu/~gohlke/pythonlibs"
     
     def __init__(self):
@@ -191,7 +191,7 @@ class PythonlibsPackages(BaseUwbpepServer):
         
         return (url, filename)
 
-class GithubUwbpepPackages(BaseUwbpepServer):    
+class GithubUwbpepServer(BaseUwbpepServer):    
     def __init__(self):
         super(BaseUwbpepServer, self).__init__()
     
@@ -210,7 +210,7 @@ class GithubUwbpepPackages(BaseUwbpepServer):
         
         return (url, filename)      
         
-class PypiUwbpepPackages(BaseUwbpepServer):    
+class PypiUwbpepServer(BaseUwbpepServer):    
     def __init__(self):
         super(BaseUwbpepServer, self).__init__()
     
@@ -257,7 +257,7 @@ class install(distutils_install):
                 failed_requires.append(arequire)
             
         if len(failed_requires) > 0:
-            packages = PypiUwbpepPackages()
+            packages = PypiUwbpepServer()
             packages.parse()            
               
             # Try to install failed requires from UWBPEP    
