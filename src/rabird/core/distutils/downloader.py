@@ -104,12 +104,12 @@ def has_wget():
 
 download_file_wget.viable = has_wget
 
-def download_file_insecure(url, target):
+def download_file_insecure(url, target, headers=None):
     """
     Use Python to download the file, even though it cannot authenticate the
     connection.
     """
-    download_file_insecure_to_io(url, open(target, "wb"))
+    download_file_insecure_to_io(url, open(target, "wb"), headers)
 
 download_file_insecure.viable = lambda: True
 
