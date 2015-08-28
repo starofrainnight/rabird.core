@@ -21,17 +21,24 @@ def _clean_check(cmd, target):
             os.unlink(target)
         raise
 
-def download_file_powershell(url, target):
+def download_file_powershell(url, target, headers=None):
     """
     Download the file at url to target using Powershell (which will validate
     trust). Raise an exception if the command cannot complete.
     """
     target = os.path.abspath(target)
+
+    powershell_cmd = "$request = (new-object System.Net.WebClient);"
+    for k, v in iter(headers):
+        powershell_cmd += "$request.headers['%s'] = '%s';" % (k, v)    
+    powershell_cmd += "$request.DownloadFile('%s', '%s')" % (url, target)
+    
     cmd = [
         'powershell',
         '-Command',
-        "(new-object System.Net.WebClient).DownloadFile(%(url)r, %(target)r)" % vars(),
+        powershell_cmd, 
     ]
+    
     _clean_check(cmd, target)
 
 def has_powershell():
