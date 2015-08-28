@@ -22,7 +22,7 @@ from ..downloader import download, download_file_insecure_to_io
 from ... import windows_api
 from pip.wheel import Wheel
 
-class BasePackages(object):
+class BaseUwbpepServer(object):
     def __init__(self):
         pass
     
@@ -158,11 +158,11 @@ class BasePackages(object):
                 sys.executable, 
                 postinstall_script_path])
 
-class PythonlibsPackages(BasePackages):    
+class PythonlibsPackages(BaseUwbpepServer):    
     page_url = "http://www.lfd.uci.edu/~gohlke/pythonlibs"
     
     def __init__(self):
-        super(BasePackages, self).__init__()
+        super(BaseUwbpepServer, self).__init__()
     
     def _decode_url(self, ml, mi):
         mi = mi.replace('&lt;','<').replace('&gt;','>').replace('&amp;','&')
@@ -191,9 +191,9 @@ class PythonlibsPackages(BasePackages):
         
         return (url, filename)
 
-class GithubUwbpepPackages(BasePackages):    
+class GithubUwbpepPackages(BaseUwbpepServer):    
     def __init__(self):
-        super(BasePackages, self).__init__()
+        super(BaseUwbpepServer, self).__init__()
     
     def _get_page_url(self):
         return "https://github.com/starofrainnight/uwbpep/releases/tag/v1.0" 
@@ -210,9 +210,9 @@ class GithubUwbpepPackages(BasePackages):
         
         return (url, filename)      
         
-class PypiUwbpepPackages(BasePackages):    
+class PypiUwbpepPackages(BaseUwbpepServer):    
     def __init__(self):
-        super(BasePackages, self).__init__()
+        super(BaseUwbpepServer, self).__init__()
     
     def _get_page_url(self):
         return "https://pypi.python.org/pypi/uwbpep/1.0" 
