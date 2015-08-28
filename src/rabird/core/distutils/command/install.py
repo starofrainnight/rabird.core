@@ -249,7 +249,7 @@ class install(distutils_install):
     """
     def _prepare_requirements(self):
         # Try to use pip install first
-        failed_requires = ["pywin32"] 
+        failed_requires = [] 
         for arequire in self.distribution.install_requires:
             
             # pip.main() will return 0 while successed ..
