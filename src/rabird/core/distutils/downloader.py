@@ -68,8 +68,15 @@ def has_curl():
 
 download_file_curl.viable = has_curl
 
-def download_file_wget(url, target):
-    cmd = ['wget', url, '--quiet', '--output-document', target]
+def download_file_wget(url, target, headers=None):
+    cmd = ['wget', url, '--quiet']
+    
+    if headers is not None:
+        if 'User-Agent' in headers:
+            cmd += ['--user-agent="%s"' % headers['User-Agent']]
+            
+    cmd += ['--output-document', target]
+    
     _clean_check(cmd, target)
 
 def has_wget():
