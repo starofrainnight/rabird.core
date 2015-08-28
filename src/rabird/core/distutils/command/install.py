@@ -25,6 +25,115 @@ from pip.wheel import Wheel
 class BasePackages(object):
     def __init__(self):
         pass
+    
+    def _get_page_url(self):
+        raise NotImplemented()    
+    
+    def _parse_urls(self, content):
+        raise NotImplemented()
+    
+    def _decode_url_and_file_name(self, amatch):
+        raise NotImplemented()
+    
+    def _get_index_page(self):
+        bytes_io = io.BytesIO()            
+        try:
+            download_file_insecure_to_io(
+                self._get_page_url(), 
+                bytes_io, 
+                # If you pass a wrong user agent, 
+                headers={'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0'},
+                )
+            return bytes_io.getvalue().decode('utf-8')  
+        finally:
+            bytes_io.close()
+            
+    def parse(self):
+        print('Downloading list page of "Unofficial Windows Binaries for Python Extension Packages" ...')
+        
+        content = self._get_index_page()
+            
+        print("Download finished. \nParsing ...")
+            
+        matches = self._parse_urls(content)
+        
+        # Initialize packages with names
+        packages = {}
+
+        # Decrypt links
+        for amatch in matches:
+            url, filename = self._decode_url_and_file_name(amatch)
+            
+            filebasename, fileextname = os.path.splitext(filename)
+            if fileextname not in [".whl"]:
+                continue
+            
+            if len(filename.split("-")) < 5:
+                continue
+            
+            if fileextname == ".exe":
+                # Fixed *.exe name to fit for Wheel() requirement! A slight trick
+                # to support *.exe package. 
+                
+                filebasename = filebasename.replace('.win-amd64', '-win_amd64')
+                filebasename = filebasename.replace('.win', '-win')
+                filebasename = filebasename.replace('-py2.', '-cp2')
+                filebasename = filebasename.replace('-py3.', '-cp3')
+                
+                wheel_info = filebasename.split('-')
+                filename = "%s-%s-%s-%s-%s.whl" % (
+                    wheel_info[0],
+                    wheel_info[1],
+                    wheel_info[3],
+                    'none',
+                    wheel_info[2]
+                    )
+            elif fileextname == ".zip":
+                filename = "%s%s" % (filebasename, ".whl")
+                
+            wheel = Wheel(filename)
+            
+            package_name = wheel.name.lower().replace("_", "-")
+            if package_name not in packages:
+                packages[package_name] = {}
+                packages[package_name]["wheels"] = []
+                packages[package_name]["requirements"] = []  
+            
+            packages[package_name]["wheels"].append((wheel, url))
+            
+        self.packages = packages  
+        
+    def find_package(self, requirement_text):
+        requirement = pkg_resources.Requirement.parse(requirement_text)
+        wheel_contexts = self.packages[requirement.key]["wheels"]
+        
+        if is_64bit():
+            python_platform = "64"
+        else:
+            python_platform = "32"
+            
+        python_versions = set([
+            "cp%s" % platform.python_version_tuple()[0],
+            "cp%s%s" % (platform.python_version_tuple()[0], platform.python_version_tuple()[1]),
+            "py%s" % platform.python_version_tuple()[0],
+            "py%s%s" % (platform.python_version_tuple()[0], platform.python_version_tuple()[1]),
+            ])        
+                
+        for wheel, url in wheel_contexts:
+            if python_platform not in wheel.plats[0]:
+                continue
+            
+            if len(set(wheel.pyversions) & python_versions) <= 0:
+                continue
+            
+            wheel_version = Version(wheel.version)
+            if not requirement.specifier.contains(wheel_version):
+                continue        
+            
+            return (wheel, url)
+        
+        raise KeyError("Can't find the requirement : %s" % requirement_text)
+    
 
 class PythonlibsPackages(BasePackages):    
     page_url = "http://www.lfd.uci.edu/~gohlke/pythonlibs"
