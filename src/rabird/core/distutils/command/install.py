@@ -40,7 +40,7 @@ class GithubUwbpepPackages(object):
         print("Download finished. \nParsing ...")
             
         re_flags = re.DOTALL|re.MULTILINE
-        matched = re.findall('<a href="([^"]*?)" rel="nofollow">', content, re_flags)
+        matched = re.findall(r'<a href="([^"]*?)" rel="nofollow">', content, re_flags)
         
         # Initialize packages with names
         packages = {}
@@ -140,7 +140,7 @@ class PypiUwbpepPackages(object):
         print("Download finished. \nParsing ...")
             
         re_flags = re.DOTALL|re.MULTILINE
-        matched = re.findall('<a href="([^"]*?\.whl#md5=[^"]*?)"', content, re_flags)
+        matched = re.findall(r'<a href="([^"]*?\.whl#md5=[^"]*?)"', content, re_flags)
         
         # Initialize packages with names
         packages = {}
