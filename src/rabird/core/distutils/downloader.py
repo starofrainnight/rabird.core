@@ -115,7 +115,7 @@ def download(url, target=None):
         
     downloader(url, target)
     
-def download_file_insecure_to_io(url, target_file=None):
+def download_file_insecure_to_io(url, target_file=None, headers=None):
     """
     Use Python to download the file, even though it cannot authenticate the
     connection.
@@ -123,11 +123,20 @@ def download_file_insecure_to_io(url, target_file=None):
     
     try:
         from urllib.request import urlopen
+        from urllib.request import Request
     except ImportError:
         from urllib2 import urlopen
+        from urllib2 import Request
     src = None
     try:
-        src = urlopen(url)
+        req = Request(
+            url, 
+            data=None, 
+            headers=headers
+        )
+        
+        src = urlopen(req)
+        
         # Read/write all in one block, so we don't create a corrupt file
         # if the download is interrupted.
         data = src.read()
