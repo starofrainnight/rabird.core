@@ -106,7 +106,7 @@ def IsUserAnAdmin():
         traceback.print_exc()
         return False
     
-def RunAsAdmin(command_line, is_wait_for_finished=False):
+def RunAsAdmin(command_line, is_wait_for_finished=False, show_cmd=0):
     if type(command_line) not in (tuple, list):
         raise ValueError("command_line is not a sequence.")
     
@@ -122,7 +122,7 @@ def RunAsAdmin(command_line, is_wait_for_finished=False):
     execinfo.lpFile = ctypes.c_wchar_p(cmd)
     execinfo.lpParameters = ctypes.c_wchar_p(params)
     execinfo.lpDirectory = None
-    execinfo.nShow = 0
+    execinfo.nShow = show_cmd
     ShellExecuteEx(ctypes.byref(execinfo))
     if is_wait_for_finished:
         ctypes.windll.kernel32.WaitForSingleObject(execinfo.hProcess, 1)
