@@ -156,7 +156,8 @@ class BaseUwbpepServer(object):
             postinstall_script_path = postinstall_script_path.replace("/", "\\")                    
             windows_api.RunAsAdmin([
                 sys.executable, 
-                postinstall_script_path])
+                postinstall_script_path], 
+                True)
 
 class PythonlibsUwbpepServer(BaseUwbpepServer):    
     page_url = "http://www.lfd.uci.edu/~gohlke/pythonlibs"
