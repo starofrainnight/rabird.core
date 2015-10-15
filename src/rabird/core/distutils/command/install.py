@@ -19,7 +19,8 @@ from setuptools.command.install import install as distutils_install
 from setuptools.command.easy_install import is_64bit
 from pkg_resources._vendor.packaging.version import Version
 from ..downloader import download, download_file_insecure_to_io
-from ... import windows_api
+if sys.platform == "win32":
+    from ... import windows_api
 from pip.wheel import Wheel
 
 class BaseUwbpepServer(object):
