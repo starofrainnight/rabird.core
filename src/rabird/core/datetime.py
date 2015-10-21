@@ -12,6 +12,7 @@ import copy
 import abc
 import sys
 import time
+import six
 
 if sys.platform == 'win32' :
 	import win32api
@@ -25,7 +26,8 @@ class CpuTimes(object):
 		self.user = 0
 		self.system = 0
 
-class AbstractCpuTimer(object, metaclass=abc.ABCMeta):
+@six.add_metaclass(abc.ABCMeta)
+class AbstractCpuTimer(object):
 	def __init__(self):
 		super(AbstractCpuTimer, self).__init__()
 		
