@@ -1,6 +1,9 @@
 Changes
 =======
 
+0.3.2 (2015-12-02)
+
+* Can't install from packaged zip file due to missing rabird_bootstrap.py
 
 0.3.0 (2015-08-27)
 
