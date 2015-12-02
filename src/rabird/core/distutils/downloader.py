@@ -21,7 +21,7 @@ def _clean_check(cmd, target):
             os.unlink(target)
         raise
 
-def download_file_powershell(url, target, headers=None):
+def download_file_powershell(url, target, headers={}):
     """
     Download the file at url to target using Powershell (which will validate
     trust). Raise an exception if the command cannot complete.
@@ -57,7 +57,7 @@ def has_powershell():
 
 download_file_powershell.viable = has_powershell
 
-def download_file_curl(url, target, headers=None):
+def download_file_curl(url, target, headers={}):
     cmd = ['curl', url, '--silent', '--output', target]
     if headers is not None:
         for k, v in headers.items():
@@ -79,7 +79,7 @@ def has_curl():
 
 download_file_curl.viable = has_curl
 
-def download_file_wget(url, target, headers=None):
+def download_file_wget(url, target, headers={}):
     cmd = ['wget', url, '--quiet']
     
     if headers is not None:
@@ -104,7 +104,7 @@ def has_wget():
 
 download_file_wget.viable = has_wget
 
-def download_file_insecure(url, target, headers=None):
+def download_file_insecure(url, target, headers={}):
     """
     Use Python to download the file, even though it cannot authenticate the
     connection.
@@ -125,7 +125,7 @@ def get_best_downloader():
         if dl.viable():
             return dl
         
-def download(url, target=None, headers=None):
+def download(url, target=None, headers={}):
     downloader = get_best_downloader()
     
     if target is None:
@@ -133,7 +133,7 @@ def download(url, target=None, headers=None):
         
     downloader(url, target, headers)
     
-def download_file_insecure_to_io(url, target_file=None, headers=None):
+def download_file_insecure_to_io(url, target_file=None, headers={}):
     """
     Use Python to download the file, even though it cannot authenticate the
     connection.
