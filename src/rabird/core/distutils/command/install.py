@@ -151,7 +151,7 @@ class BaseUwbpepServer(object):
         # Only pywin32 needs postinstall script. 
         if filename.startswith("pywin32"):
             postinstall_script_path = os.path.normpath(os.path.join(
-                    sys.base_exec_prefix, 
+                    sys.exec_prefix, 
                     "Scripts", 
                     "pywin32_postinstall.py"))
             postinstall_script_path = postinstall_script_path.replace("/", "\\")                    
