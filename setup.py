@@ -38,7 +38,11 @@ our_requires = [
     ]
 
 if sys.platform == "win32":
-    our_requires.append("pywin32>=218")
+    # Require pywin32 package, but we use the pypiwin32 for install.
+    try:
+        import win32con
+    except ImportError:	
+        our_requires.append("pypiwin32")
 else:
     our_requires.append("linux-metrics")
     

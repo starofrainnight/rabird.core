@@ -1,6 +1,10 @@
 Changes
 =======
 
+0.3.5 (2015-12-02)
+
+* Supported install pywin32 through pip by pypiwin32 package 
+
 0.3.2 (2015-12-02)
 
 * Can't install from packaged zip file due to missing rabird_bootstrap.py
