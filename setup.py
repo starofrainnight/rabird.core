@@ -44,7 +44,7 @@ if sys.platform == "win32":
     except ImportError:	
         our_requires.append("pypiwin32")
 else:
-    our_requires.append("linux-metrics")
+    our_requires.append("linux_metrics")
     
 if sys.version_info[0] == 2:
     our_requires.append("enum34")
