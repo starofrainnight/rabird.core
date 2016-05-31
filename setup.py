@@ -15,7 +15,7 @@ import pydgutils
 # global rabird.core.
 shutil.rmtree("./rabird", ignore_errors=True)
 
-from src.rabird.core import __version__, distutils
+from src.rabird.core import __version__
 from setuptools import setup, find_packages
 from src.rabird.core.distutils.command.install import install as install_command
 
