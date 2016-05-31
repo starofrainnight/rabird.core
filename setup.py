@@ -3,13 +3,6 @@
 from rabird_bootstrap import use_pydgutils
 use_pydgutils()
 
-# Prepare six module
-try:
-    import six
-except ImportError:
-    import pip
-    pip.main(["install", "six"])
-
 import os
 import os.path
 import sys
