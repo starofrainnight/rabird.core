@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from rabird_bootstrap import use_pip
-use_pip()
+from rabird_bootstrap import use_pydgutils
+use_pydgutils()
 
 # Prepare six module
 try:
@@ -16,6 +16,7 @@ import sys
 import shutil
 import logging
 import fnmatch
+import pydgutils
 
 # First remove "./rabird" directory, otherwise it would failed to import
 # global rabird.core.
@@ -28,11 +29,11 @@ from src.rabird.core.distutils.command.install import install as install_command
 package_name = "rabird.core"
 
 # Convert source to v2.x if we are using python 2.x.
-source_dir = distutils.preprocess_source()
+source_dir = pydgutils.process()
 
 # Exclude the original source package, only accept the preprocessed package!
 our_packages = find_packages(where=source_dir)
-    
+
 our_requires = [
     "six>=1.3.0"
     ]
@@ -41,14 +42,14 @@ if sys.platform == "win32":
     # Require pywin32 package, but we use the pypiwin32 for install.
     try:
         import win32con
-    except ImportError:	
+    except ImportError:
         our_requires.append("pypiwin32")
 else:
     our_requires.append("linux_metrics")
-    
+
 if sys.version_info[0] == 2:
     our_requires.append("enum34")
-    
+
 long_description=(
      open("README.rst", "r").read()
      + "\n" +
@@ -65,12 +66,12 @@ setup(
     long_description=long_description,
     classifiers=[
         "Development Status :: 3 - Alpha",
-        "Intended Audience :: Developers",        
+        "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent", 
+        "Operating System :: OS Independent",
         "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: Implementation :: CPython",        
+        "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Software Development :: Libraries",
     ],
     install_requires=our_requires,

@@ -167,11 +167,19 @@ def use_pip():
         download(url)
         os.system("%s %s" % (sys.executable, filename))
         
+def use_pydgutils():
+    try:
+        import pydgutils
+    except:
+        use_pip()
+        import pip
+        pip.main(["install", "pydgutils"])
+        
 def use_rabird():
     try:
         import rabird.core
     except:
-        use_pip()    
+        use_pydgutils()    
         import pip
         pip.main(["install", "rabird.core"])
         
