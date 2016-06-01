@@ -17,7 +17,6 @@ shutil.rmtree("./rabird", ignore_errors=True)
 
 from src.rabird.core import __version__
 from setuptools import setup, find_packages
-from src.rabird.core.distutils.command.install import install as install_command
 
 package_name = "rabird.core"
 
@@ -73,7 +72,4 @@ setup(
     namespace_packages=[package_name.split(".")[0]],
     # If we don"t set the zip_safe to False, pip can"t find us.
     zip_safe=False,
-    cmdclass= {
-        'install': install_command,
-    },
     )
