@@ -28,7 +28,7 @@ our_packages = find_packages(where=source_dir)
 
 our_requires = [
     "six>=1.3.0"
-    ]
+]
 
 if sys.platform == "win32":
     # Require pywin32 package, but we use the pypiwin32 for install.
@@ -42,11 +42,11 @@ else:
 if sys.version_info[0] == 2:
     our_requires.append("enum34")
 
-long_description=(
-     open("README.rst", "r").read()
-     + "\n" +
-     open("CHANGES.rst", "r").read()
-     )
+long_description = (
+    open("README.rst", "r").read()
+    + "\n" +
+    open("CHANGES.rst", "r").read()
+)
 
 setup(
     name=package_name,
@@ -67,9 +67,9 @@ setup(
         "Topic :: Software Development :: Libraries",
     ],
     install_requires=our_requires,
-    package_dir = {"": source_dir},
+    package_dir={"": source_dir},
     packages=our_packages,
     namespace_packages=[package_name.split(".")[0]],
     # If we don"t set the zip_safe to False, pip can"t find us.
     zip_safe=False,
-    )
+)
