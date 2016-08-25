@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from rabird_bootstrap import use_pydgutils
+from pydgutils_bootstrap import use_pydgutils
 use_pydgutils()
 
 import os
@@ -10,10 +10,6 @@ import shutil
 import logging
 import fnmatch
 import pydgutils
-
-# First remove "./rabird" directory, otherwise it would failed to import
-# global rabird.core.
-shutil.rmtree("./rabird", ignore_errors=True)
 
 from src.rabird.core import __version__
 from setuptools import setup, find_packages
