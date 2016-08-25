@@ -159,6 +159,6 @@ def preprocess_source(base_dir=os.curdir):
                 files.append(right_file_path)
 
         if len(files) > 0:
-            lib3to2_main("lib3to2.fixes", files)
+            lib3to2_main("lib3to2.fixes",  ["-w", "-n", "--no-diffs"] + files)
 
     return destination_path
