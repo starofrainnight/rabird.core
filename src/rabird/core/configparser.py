@@ -4,9 +4,7 @@
 @author Hong-She Liang <starofrainnight@gmail.com>
 '''
 
-
-from six.moves import configparser
-import io
+import configparser
 import io
 import os
 import re
