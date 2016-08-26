@@ -1,6 +1,10 @@
 Changes
 =======
 
+0.3.9 (2015-12-02)
+
+* Switch to pydgutils bootstrap
+
 0.3.5 (2015-12-02)
 
 * Supported install pywin32 through pip by pypiwin32 package 
