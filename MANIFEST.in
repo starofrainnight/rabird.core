@@ -11,3 +11,5 @@ global-exclude *.pyo
 global-exclude *.so
 global-exclude *.bak
 global-exclude *.old
+global-exclude *.orig
+
