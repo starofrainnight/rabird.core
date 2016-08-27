@@ -1,6 +1,8 @@
 rabird.core
 -----------
-
+.. image:: https://travis-ci.org/starofrainnight/rabird.core.svg?branch=master
+    :target: https://travis-ci.org/starofrainnight/rabird.core
+    
 The base library for rabird series modules.
 
 This library provided a series helper utilties for production, they are
@@ -17,4 +19,3 @@ just for production practice:
 -  Windows fixes just like "fix console can't output unicode string in
    python 2.7", etc .
 -  Miscellaneous ...
-
