@@ -8,7 +8,8 @@ import os
 import os.path
 import platform
 import subprocess
-
+from urllib.request import urlopen
+from urllib.request import Request
 
 def _clean_check(cmd, target):
     """
@@ -150,12 +151,6 @@ def download_file_insecure_to_io(url, target_file=None, headers={}):
     connection.
     """
 
-    try:
-        from urllib.request import urlopen
-        from urllib.request import Request
-    except ImportError:
-        from urllib2 import urlopen
-        from urllib2 import Request
     src = None
     try:
         req = Request(
