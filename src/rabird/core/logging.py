@@ -23,7 +23,7 @@ def load_default_config():
 
     for k in list(arguments.keys()):
         try:
-            envionment_text = 'PYTHON_LOGGING_{}'.format(k.upper())
+            envionment_text = 'PYTHON_LOGGING_%s' % k.upper()
             arguments[k] = os.environ[envionment_text]
         except ValueError:
             pass
