@@ -1,8 +1,7 @@
 
 import sys
 
-version_info = (0, 3, 11)
-__version__ = '.'.join(map(str, version_info))
+__version__ = '0.3.11'
 __monkey_patched = False
 
 # Known Issues : Can't work with eventlet, Why?
