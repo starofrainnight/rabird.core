@@ -44,6 +44,12 @@ class ConfigParser(configparser.ConfigParser):
         # Added default unnamed section
         self.add_section(self.UNNAMED_SECTION)
 
+        # Because readfp() may read multi-files, there may be same section with
+        # some extension lines (comments or empty lines), so we can't just
+        # start a line id with 0 in readfp(), that would lead
+        # DuplicateOptionError error!
+        self._line_id = 0
+
     def set(self, section, option, value):
         if not self.has_section(section):
             self.add_section(section)
@@ -59,7 +65,6 @@ class ConfigParser(configparser.ConfigParser):
         # We could only use the readline() by definitions
         abuffer = '[' + self.UNNAMED_SECTION + ']' + os.linesep
 
-        i = 0
         while True:
             line = fp.readline()
             if len(line) <= 0:
@@ -67,10 +72,13 @@ class ConfigParser(configparser.ConfigParser):
 
             temp_line = line.strip()
             if len(temp_line) <= 0:
-                line = self.__EMPTY_OPTION + str(i) + '=#' + os.linesep
+                line = (self.__EMPTY_OPTION +
+                        str(self._line_id) + '=#' + os.linesep)
             elif temp_line.startswith('#') or temp_line.startswith(';'):
-                line = self.__COMMENT_OPTION + str(i) + '=#' + line
+                line = self.__COMMENT_OPTION + str(self._line_id) + '=#' + line
             abuffer += line
+
+            self._line_id += 1
 
         # In 3.x, the ConfigParser is a newstyle object
         fp = io.StringIO(abuffer)
