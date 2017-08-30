@@ -29,9 +29,9 @@ import re
 class ConfigParser(configparser.ConfigParser):
     UNNAMED_SECTION = '#--CONFIGPARSER-UNNAMED-SECTION--#'
     # It will transfer to empty line
-    __EMPTY_OPTION = '--CONFIGPARSER-EMPTY-OPTION--'
+    __EMPTY_OPTION = '--CONFIGPARSER-EMPTY-OPTION'
     # It will transfer to comment line
-    __COMMENT_OPTION = '--CONFIGPARSER-COMMENT-OPTION--'
+    __COMMENT_OPTION = '--CONFIGPARSER-COMMENT-OPTION'
 
     def __init__(self, *args, **kwargs):
         if issubclass(ConfigParser, object):
