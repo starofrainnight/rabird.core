@@ -29,9 +29,9 @@ import re
 class ConfigParser(configparser.ConfigParser):
     UNNAMED_SECTION = '#--CONFIGPARSER-UNNAMED-SECTION--#'
     # It will transfer to empty line
-    __EMPTY_OPTION = '--CONFIGPARSER-EMPTY-OPTION'
+    _EMPTY_OPTION = '--CONFIGPARSER-EMPTY-OPTION'
     # It will transfer to comment line
-    __COMMENT_OPTION = '--CONFIGPARSER-COMMENT-OPTION'
+    _COMMENT_OPTION = '--CONFIGPARSER-COMMENT-OPTION'
 
     def __init__(self, *args, **kwargs):
         if issubclass(ConfigParser, object):
@@ -72,10 +72,10 @@ class ConfigParser(configparser.ConfigParser):
 
             temp_line = line.strip()
             if len(temp_line) <= 0:
-                line = (self.__EMPTY_OPTION +
+                line = (self._EMPTY_OPTION +
                         str(self._line_id) + '=#' + os.linesep)
             elif temp_line.startswith('#') or temp_line.startswith(';'):
-                line = self.__COMMENT_OPTION + str(self._line_id) + '=#' + line
+                line = self._COMMENT_OPTION + str(self._line_id) + '=#' + line
             abuffer += line
 
             self._line_id += 1
@@ -131,10 +131,10 @@ class ConfigParser(configparser.ConfigParser):
 
             m = regexp.match(line)
             if m is not None:
-                if m.group(1).startswith(self.__EMPTY_OPTION):
+                if m.group(1).startswith(self._EMPTY_OPTION):
                     # Emtpty line
                     abuffer += '\n'
-                elif m.group(1).startswith(self.__COMMENT_OPTION):
+                elif m.group(1).startswith(self._COMMENT_OPTION):
                     # Remove the prefix ' #', the rest is comments !
                     abuffer += '%s\n' % m.group(2)[2:]
                 else:
