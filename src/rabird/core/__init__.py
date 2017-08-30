@@ -1,7 +1,7 @@
 
 import sys
 
-__version__ = '0.3.12'
+__version__ = '0.3.13'
 __monkey_patched = False
 
 # Known Issues : Can't work with eventlet, Why?
