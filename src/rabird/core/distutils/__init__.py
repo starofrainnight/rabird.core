@@ -92,16 +92,20 @@ def preprocess_source(base_dir=os.curdir):
     try:
         from lib3to2.main import main as lib3to2_main
     except ImportError:
-        import pip
+        try:
+            from pip import main as pipmain
+        except:
+            from pip._internal import main as pipmain
 
-        pip.main(['install', '3to2'])
+        pipmain(['install', '3to2'])
 
         from lib3to2.main import main as lib3to2_main
 
     # Remove old preprocessed sources.
     if not os.path.exists(destination_path):
         __copy_tree(source_path, destination_path)
-        lib3to2_main("lib3to2.fixes", ["-w", "-n", "--no-diffs"] + [destination_path])
+        lib3to2_main("lib3to2.fixes",
+                     ["-w", "-n", "--no-diffs"] + [destination_path])
     else:
         # Remove all files that only in right side
         # Copy all files that only in left side to right side, then
@@ -159,6 +163,6 @@ def preprocess_source(base_dir=os.curdir):
                 files.append(right_file_path)
 
         if len(files) > 0:
-            lib3to2_main("lib3to2.fixes",  ["-w", "-n", "--no-diffs"] + files)
+            lib3to2_main("lib3to2.fixes", ["-w", "-n", "--no-diffs"] + files)
 
     return destination_path
