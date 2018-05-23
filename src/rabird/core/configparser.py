@@ -87,14 +87,14 @@ class ConfigParser(configparser.ConfigParser):
         else:
             configparser.ConfigParser.readfp(self, fp, *args, **kwargs)
 
-    def write(self, fileobject):
+    def write(self, fileobject, *args, **kwargs):
         string_io = io.StringIO()
 
         # In 3.x, the ConfigParser is a newstyle object
         if issubclass(ConfigParser, object):
-            super(ConfigParser, self).write(string_io)
+            super(ConfigParser, self).write(string_io, *args, **kwargs)
         else:
-            configparser.ConfigParser.write(self, string_io)
+            configparser.ConfigParser.write(self, string_io, *args, **kwargs)
 
         abuffer = string_io.getvalue()
         string_io = io.StringIO(abuffer)
