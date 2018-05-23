@@ -87,14 +87,14 @@ class ConfigParser(configparser.ConfigParser):
         else:
             configparser.ConfigParser.readfp(self, fp, *args, **kwargs)
 
-    def write(self, fileobject, *args, **kwargs):
+    def write(self, fileobject, space_around_delimiters=True):
         string_io = io.StringIO()
 
         # In 3.x, the ConfigParser is a newstyle object
         if issubclass(ConfigParser, object):
-            super(ConfigParser, self).write(string_io, *args, **kwargs)
+            super(ConfigParser, self).write(string_io)
         else:
-            configparser.ConfigParser.write(self, string_io, *args, **kwargs)
+            configparser.ConfigParser.write(self, string_io)
 
         abuffer = string_io.getvalue()
         string_io = io.StringIO(abuffer)
@@ -114,12 +114,13 @@ class ConfigParser(configparser.ConfigParser):
 
                 abuffer = abuffer[len(first_line):]
 
-        # Rebuild the string io and strip spaces before and after '=' ( Avoid
-        # error happends to some strict ini format parsers )
+        # Rebuild the string io and strip spaces before and after '=' (
+        # Avoid error happends to some strict ini format parsers )
         string_io = io.StringIO(abuffer)
 
-        # You must notice that we use "\n" not the os.linesep, because "\n" will
-        # be converted to '\r\n' in window while file be opened with text mode!
+        # You must notice that we use "\n" not the os.linesep, because "\n"
+        # will be converted to '\r\n' in window while file be opened with
+        # text mode!
         abuffer = ''
         regexp = re.compile(r'([^\[][^=]*)=(.*)')
         while True:
@@ -138,8 +139,13 @@ class ConfigParser(configparser.ConfigParser):
                     # Remove the prefix ' #', the rest is comments !
                     abuffer += '%s\n' % m.group(2)[2:]
                 else:
-                    abuffer += '%s=%s\n' % (m.group(1).strip(),
-                                            m.group(2).strip())
+                    if space_around_delimiters:
+                        buffer_format = '%s = %s\n'
+                    else:
+                        buffer_format = '%s=%s\n'
+
+                    abuffer += buffer_format % (
+                        m.group(1).strip(), m.group(2).strip())
             else:
                 # Added a line separator to end of section name line.
                 if line.strip():
