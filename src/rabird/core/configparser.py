@@ -142,6 +142,7 @@ class ConfigParser(configparser.ConfigParser):
                                             m.group(2).strip())
             else:
                 # Added a line separator to end of section name line.
-                abuffer += "%s\n" % line
+                if line.strip():
+                    abuffer += "%s\n" % line
 
         fileobject.write(abuffer.strip())
