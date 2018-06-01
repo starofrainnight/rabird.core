@@ -13,6 +13,7 @@ import pydgutils
 
 from src.rabird.core import __version__
 from setuptools import setup, find_packages
+from pkg_resources import parse_version
 
 package_name = "rabird.core"
 
@@ -31,7 +32,15 @@ if sys.platform == "win32":
     try:
         import win32con
     except ImportError:
-        our_requires.append("pypiwin32")
+        current_version = parse_version(
+            "%s.%s" % (sys.version_info.major, sys.version_info.minor))
+        if current_version < parse_version('3.6'):
+            # pypiwin32 not support versions below 3.6!
+            our_requires.append("pypiwin32==219")
+        elif current_version < parse_version('3.7'):
+            our_requires.append("pypiwin32==220")
+        else:
+            our_requires.append("pypiwin32")
 else:
     our_requires.append("linux_metrics")
 
