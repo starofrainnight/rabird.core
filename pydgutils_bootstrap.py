@@ -1,7 +1,7 @@
 '''
 The MIT License (MIT)
 
-Copyright (c) 2016, Hong-She Liang <starofrainnight@gmail.com>.
+Copyright (c) 2016-2018, Hong-She Liang <starofrainnight@gmail.com>.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -187,9 +187,5 @@ def use_pydgutils():
         import pydgutils
     except:
         use_pip()
-        try:
-            from pip import main as pipmain
-        except:
-            from pip._internal import main as pipmain
 
-        pipmain(["install", "pydgutils"])
+        os.system("%s -m pip install pydgutils" % sys.executable)
