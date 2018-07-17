@@ -6,7 +6,7 @@ import sys
 
 __author__ = """Hong-She Liang"""
 __email__ = 'starofrainnight@gmail.com'
-__version__ = '0.3.17'
+__version__ = '0.4.0'
 __monkey_patched = False
 
 # Known Issues : Can't work with eventlet, Why?
