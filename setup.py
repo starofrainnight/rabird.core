@@ -1,7 +1,7 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-from pydgutils_bootstrap import use_pydgutils
-use_pydgutils()
+"""The setup script."""
 
 import os
 import os.path
@@ -9,22 +9,27 @@ import sys
 import shutil
 import logging
 import fnmatch
-import pydgutils
 
-from src.rabird.core import __version__
 from setuptools import setup, find_packages
 from pkg_resources import parse_version
 
-package_name = "rabird.core"
+with open('README.rst', encoding='utf-8') as readme_file, \
+    open('HISTORY.rst', encoding='utf-8') as history_file:
+    long_description = (readme_file.read() + "\n\n" + history_file.read())
 
-# Convert source to v2.x if we are using python 2.x.
-source_dir = pydgutils.process()
+install_requires = [
+    'click>=6.0',
+    'six>=1.3.0',
+]
 
-# Exclude the original source package, only accept the preprocessed package!
-our_packages = find_packages(where=source_dir)
+setup_requires = [
+    'pytest-runner',
+    # TODO(starofrainnight): put setup requirements (distutils extensions, etc.) here
+]
 
-our_requires = [
-    "six>=1.3.0"
+tests_requires = [
+    'pytest',
+    # TODO: put package test requirements here
 ]
 
 if sys.platform == "win32":
@@ -36,48 +41,41 @@ if sys.platform == "win32":
             "%s.%s" % (sys.version_info.major, sys.version_info.minor))
         if current_version < parse_version('3.6'):
             # pypiwin32 not support versions below 3.6!
-            our_requires.append("pypiwin32==219")
+            install_requires.append("pypiwin32==219")
         elif current_version < parse_version('3.7'):
-            our_requires.append("pypiwin32==220")
+            install_requires.append("pypiwin32==220")
         else:
-            our_requires.append("pypiwin32")
+            install_requires.append("pypiwin32")
 else:
-    our_requires.append("linux_metrics")
+    install_requires.append("linux_metrics")
 
 if sys.version_info[0] == 2:
-    our_requires.append("enum34")
-
-long_description = (
-    open("README.rst", "r").read()
-    + "\n" +
-    open("CHANGES.rst", "r").read()
-)
+    install_requires.append("enum34")
 
 setup(
-    name=package_name,
-    version=__version__,
-    author="Hong-She Liang",
-    author_email="starofrainnight@gmail.com",
-    url="https://github.com/starofrainnight/%s" % package_name,
+    name='rabird.core',
+    version='0.3.17',
     description="A library contained miscellaneous functions and fixes that used during our development",
     long_description=long_description,
-    classifiers=[
-        "Development Status :: 3 - Alpha",
-        "Intended Audience :: Developers",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.4",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: Implementation :: CPython",
-        "Topic :: Software Development :: Libraries",
-    ],
-    install_requires=our_requires,
-    package_dir={"": source_dir},
-    packages=our_packages,
-    namespace_packages=[package_name.split(".")[0]],
-    # If we don"t set the zip_safe to False, pip can"t find us.
+    author="Hong-She Liang",
+    author_email='starofrainnight@gmail.com',
+    url='https://github.com/starofrainnight/rabird.core',
+    packages=find_packages(),
+    include_package_data=True,
+    install_requires=install_requires,
+    license="Apache Software License",
     zip_safe=False,
+    keywords='rabird.core',
+    classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Apache Software License',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+    ],
+    test_suite='tests',
+    tests_require=tests_requires,
+    setup_requires=setup_requires,
 )

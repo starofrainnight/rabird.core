@@ -1,23 +1,36 @@
+# Config file for automatic testing at travis-ci.org
 language: python
-python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
-  - "3.6"
-  - "pypy"
-deploy:
-  provider: pypi
-  distributions: sdist
-  user: starofrainnight
-  password:
-    secure: EU0d4/tC0qGdTKDzts0moZbOmHudJtWIRwzPE8MlBV/MRya/VfDAKRhpCClhd2IHw8YWcwmV2fR1Bjb/9+j2YRWtlLJ8NZGDBsJ2FGFEUXuWdJnwM2MtWZhwSZyFh1D1BQc2KpLaVJKB/MvteFUIchGfZWCn1QJoRqkvEXbwqPlP2rCmh8JULPFhxCoStHkngyCmOK9PTQXnv6UwyiPV5UOF74miuJ23JW4pHc2SSpTmlG4n6+P/SrBubDMxePZxf/1hhtRtxapjiatIiIsvTgezeQkPQLcLxrGpp2uFNIo92rcBFJzH3MlPARgJwo/4s6DUmBm6XQCbrwqc2nmswp6rvZLX7VigONZRDmUm5MN3CMFVLdD1pQXhzAgelbqtH+uHHle7T40EwbmBX4hKdVrhYRe7D2Bua7D/4oS9hIlMNq8oajrmk5jdYNy6nWJnIIAu/gl8St/pXlVKgA9oIC0BvKAueWgY83ReAKIyRuf5bQS91xHh1uo5xn6YBWh3L7ATldY8hHuLNUbkmwzK3mazBHBTxrzPmU/2IE1jJ/iMFOTQLg2Q+F1XZUrXgvE49QwCK6VD6amFVocFxDa9ynGY9DDvSbF/lLnWF93ScGmkRqHwAx8VTXY9FVy6daPYChIFvbPHBok5QZGEGCaEs4c+01FzaPhzw1x3IoOLaMM=
-  on:
-    tags: true
-    repo: starofrainnight/rabird.core
-    python: 3.6
-# command to install dependencies
+
+matrix:
+  include:
+    # - python: 2.7
+    - python: 3.4
+    - python: 3.5
+    - python: 3.6
+
+# command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
-  - pip install .
-# command to run tests
+  - python -m pip install -U pip
+  - python -m pip install -U setuptools
+  # Prepare test utility
+  - python -m pip install click
+
+# command to run tests, e.g. python setup.py test
 script:
-  - python -c "exit(0)"
+  - |
+    # Only run mypy and flake8 check with python 3.6
+    if [ "${TRAVIS_PYTHON_VERSION}" == "3.6" ] ; then
+      python ./ci/executor.py test -e mypy -e flake8
+    fi
+  - python ./ci/executor.py test
+
+# After you create the Github repo and add it to Travis, predefine
+# TWINE_USERNAME and TWINE_PASSWORD environment variables in your travis-ci
+# project settings, so that twine will access them without place the private
+# account informations in this travis configuration file.
+after_success:
+  - |
+    # Only deploy on python 3.6 and tag version
+    if [ -n "${TRAVIS_TAG}" ] && [ "${TRAVIS_PYTHON_VERSION}" == "3.6" ] ; then
+      python ./ci/executor.py deploy
+    fi
