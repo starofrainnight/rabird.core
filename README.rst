@@ -26,7 +26,6 @@ Features
 -  An advance ConfigParser
 -  C-style string manage functions
 -  Some CPU related datetime functions
--  Distutils for preprocess source to compatilbe with python 2.7
 -  Html related stuffs
 -  Logging functions
 -  Some system related stuffs
