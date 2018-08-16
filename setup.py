@@ -14,7 +14,7 @@ from setuptools import setup, find_packages
 from pkg_resources import parse_version
 
 with open('README.rst', encoding='utf-8') as readme_file, \
-    open('HISTORY.rst', encoding='utf-8') as history_file:
+        open('HISTORY.rst', encoding='utf-8') as history_file:
     long_description = (readme_file.read() + "\n\n" + history_file.read())
 
 install_requires = [
@@ -42,9 +42,8 @@ if sys.platform == "win32":
         if current_version < parse_version('3.6'):
             # pypiwin32 not support versions below 3.6!
             install_requires.append("pypiwin32==219")
-        elif current_version < parse_version('3.7'):
-            install_requires.append("pypiwin32==220")
         else:
+            # Latest pypiwin32 support python 3.6 and above
             install_requires.append("pypiwin32")
 else:
     install_requires.append("linux_metrics")
