@@ -53,7 +53,7 @@ if sys.version_info[0] == 2:
 
 setup(
     name='rabird.core',
-    version='0.4.0',
+    version='0.4.1',
     description="A library contained miscellaneous functions and fixes that used during our development",
     long_description=long_description,
     author="Hong-She Liang",
